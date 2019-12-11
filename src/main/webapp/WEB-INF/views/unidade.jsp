@@ -1,5 +1,6 @@
 <%@page import="java.util.List"%>
 <%@page import="br.edu.ifce.cedro.stockcontrol.models.Unidade"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -12,16 +13,9 @@
 </head>
 <body>
 <ul>
-<%
-List<Unidade> unidades = (List<Unidade>) request.getAttribute("unidades");
-for(Unidade unidade : unidades) {
-	request.setAttribute("unidade", unidade);
-
-%>
-<li>${unidade.simbolo}  - ${unidade.descricao}</li>
-<%
-}
-%>
+<c:forEach items="${unidades}" var="unidade">
+	<li>${unidade.descricao} [${unidade.simbolo}]</li>
+</c:forEach>
 </ul>
 </body>
 </html>
