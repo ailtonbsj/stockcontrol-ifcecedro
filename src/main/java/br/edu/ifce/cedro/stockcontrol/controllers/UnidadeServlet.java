@@ -24,6 +24,8 @@ import br.edu.ifce.cedro.stockcontrol.models.Unidade;
 public class UnidadeServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		req.setAttribute("viewName", "Unidades");
+		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 		
