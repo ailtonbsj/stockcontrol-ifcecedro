@@ -39,7 +39,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            	<c:forEach items="${unidades}" var="unidade">
+                            	<c:forEach items="${Unidades}" var="unidade">
                                 <tr>
                                     <td>${unidade.id}</td>
                                     <td>${unidade.simbolo}</td>
