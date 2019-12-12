@@ -25,49 +25,72 @@ public class UnidadeServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setAttribute("viewName", "Unidades");
+		String update = req.getParameter("up");
+		String delete = req.getParameter("del");
 		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 		
-		Unidade metro = new Unidade();
-		metro.setSimbolo("m");
-		metro.setDescricao("Metro");
+		if(req.getParameter("add") != null) {
+			req.getRequestDispatcher("/WEB-INF/views/unidade-form.jsp").forward(req, resp);
+		} else if(update != null) {
+			Unidade unidade = session.get(Unidade.class, Integer.parseInt(update));
+			req.setAttribute("id", unidade.getId().toString());
+			req.setAttribute("simbolo", unidade.getSimbolo());
+			req.setAttribute("descricao", unidade.getDescricao());
+			req.getRequestDispatcher("/WEB-INF/views/unidade-form.jsp").forward(req, resp);
+		} else if(delete != null) {
+			System.out.println("DELETE!");
+			Unidade unidade = session.get(Unidade.class, Integer.parseInt(delete));
+			session.beginTransaction();
+			session.remove(unidade);
+			session.getTransaction().commit();
+			
+			resp.sendRedirect("/unidade");
+		} else {
+			CriteriaBuilder cb =  session.getCriteriaBuilder();
+			CriteriaQuery<Unidade> cq = cb.createQuery(Unidade.class);
+			Root<Unidade> rootEntry = cq.from(Unidade.class);
+			CriteriaQuery<Unidade> all = cq.select(rootEntry);
+		    TypedQuery<Unidade> allQuery = session.createQuery(all);
+		    List<Unidade> unidades = allQuery.getResultList();
+		    
+			session.close();
+			
+			req.setAttribute("unidades", unidades);
+			req.getRequestDispatcher("/WEB-INF/views/unidade-table.jsp").forward(req, resp);
+		}
 		
-		Unidade kilo = new Unidade();
-		kilo.setSimbolo("kg");
-		kilo.setDescricao("kilograma");
-		
-		session.beginTransaction();
-		session.save(kilo);
-		session.save(metro);
-		session.getTransaction().commit();
-		
-		CriteriaBuilder cb =  session.getCriteriaBuilder();
-		CriteriaQuery<Unidade> cq = cb.createQuery(Unidade.class);
-		Root<Unidade> rootEntry = cq.from(Unidade.class);
-		CriteriaQuery<Unidade> all = cq.select(rootEntry);
-	    TypedQuery<Unidade> allQuery = session.createQuery(all);
-	    List<Unidade> unidades = allQuery.getResultList();
-		//Unidade unidade = session.get(Unidade.class, 1);
-		session.close();
-		
-		req.setAttribute("unidades", unidades);
-		req.getRequestDispatcher("/WEB-INF/views/unidade.jsp").forward(req, resp);
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Unidade metro = new Unidade();
-		metro.setSimbolo("m");
-		metro.setDescricao("Metro");
+		String id = req.getParameter("id");
 		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
+		
+		Unidade unidade;
 		session.beginTransaction();
-		session.save(metro);
+		
+		if(id.equals("")) {
+			unidade = new Unidade();
+		} else {
+			unidade = session.get(Unidade.class, Integer.parseInt(id));
+		}
+		
+		unidade.setSimbolo(req.getParameter("simbolo"));
+		unidade.setDescricao(req.getParameter("descricao"));
+		
+		if(id.equals("")) {
+			session.save(unidade);
+		} else {
+			session.update(unidade);
+		}
+		
 		session.getTransaction().commit();
 		session.close();
 		
-		resp.getWriter().println("<h1>Ola mundo</h1>");
+		resp.sendRedirect("/unidade");
 	}
 }

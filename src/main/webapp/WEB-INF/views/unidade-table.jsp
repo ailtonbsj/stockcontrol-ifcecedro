@@ -45,8 +45,8 @@
                                     <td>${unidade.simbolo}</td>
                                     <td>${unidade.descricao}</td>
                                     <td>
-                                    	<a class="badge badge-success" href="#">Atualizar</a>
-                                    	<a class="badge badge-danger" href="#">Excluir</a>
+                                    	<a class="badge badge-success" href="/unidade?up=${unidade.id}">Atualizar</a>
+                                    	<a class="badge badge-danger" href="/unidade?del=${unidade.id}">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>
