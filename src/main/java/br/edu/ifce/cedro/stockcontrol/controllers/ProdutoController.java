@@ -1,5 +1,9 @@
 package br.edu.ifce.cedro.stockcontrol.controllers;
 
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.hibernate.Session;
@@ -33,19 +37,39 @@ public class ProdutoController extends Controller {
 	
 	@Override
 	protected void add(Session session) {
-		// TODO Auto-generated method stub
-		
+		Produto produto = new Produto();
+		setFields((Object) produto);
+		session.beginTransaction();
+		session.save(produto);
+		session.getTransaction().commit();
 	}
 
 	@Override
 	protected void setFields(Object item) {
-		// TODO Auto-generated method stub
-		
+		for(Iterator<String> i = request.getAttributeNames().asIterator(); i.hasNext();) {
+			System.out.println(i.next());
+		}
+		((Produto) item).setNome(request.getParameter("nome"));
+		((Produto) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
+		Unidade unidade = new Unidade();
+		unidade.setId(Integer.valueOf(request.getParameter("unidade")));
+		((Produto) item).setUnidade(unidade);
 	}
 
 	@Override
-	protected void setFieldsForm(Object item) {
-		// TODO Auto-generated method stub
-		
+	protected void setFieldsForm(Object produto) {
+		request.setAttribute("id", ((Produto) produto).getId().toString());
+		request.setAttribute("nome", ((Produto) produto).getNome());
+		request.setAttribute("quantidade", ((Produto) produto).getQuantidade().toString());
+	}
+	
+	protected void showEmptyForm() throws ServletException, IOException {
+		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
+		super.showEmptyForm();
+	}
+	
+	protected void showFilledForm(String id) throws ServletException, IOException {
+		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
+		super.showFilledForm(id);
 	}
 }

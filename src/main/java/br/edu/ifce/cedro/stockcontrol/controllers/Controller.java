@@ -1,6 +1,7 @@
 package br.edu.ifce.cedro.stockcontrol.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -56,26 +57,32 @@ public abstract class Controller extends HttpServlet {
 		session.close();
 	}
 	
-	protected void listAll() throws ServletException, IOException {
+	protected static List<Object> getList(String modelName) throws ServletException, IOException {
+		List<Object> list = new ArrayList<Object>();
+		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
-
-		CriteriaBuilder cb =  session.getCriteriaBuilder();
+		
 		try {
+			CriteriaBuilder cb =  session.getCriteriaBuilder();
 			@SuppressWarnings("unchecked")
-			CriteriaQuery<Object> cq = (CriteriaQuery<Object>) cb.createQuery(Class.forName(getModel()));
+			CriteriaQuery<Object> cq = (CriteriaQuery<Object>) cb.createQuery(Class.forName(modelName));
 			@SuppressWarnings("unchecked")
-			Root<Object> rootEntry = (Root<Object>) cq.from(Class.forName(getModel()));
+			Root<Object> rootEntry = (Root<Object>) cq.from(Class.forName(modelName));
 			CriteriaQuery<Object> all = cq.select(rootEntry);
 		    TypedQuery<Object> allQuery = session.createQuery(all);
-		    List<Object> list = allQuery.getResultList();
-		    request.setAttribute(getViewNamePlural(), list);
-			request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
+		    list = allQuery.getResultList();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
 	    session.close();
+	    return list;
+	}
+	
+	protected void listAll() throws ServletException, IOException {
+		request.setAttribute(getViewNamePlural(), getList(getModel()));
+		request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
 	}
 	
 	protected abstract void add(Session session);
@@ -130,6 +137,9 @@ public abstract class Controller extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		this.request = req;
+		this.response = resp;
+		
 		String id = req.getParameter("id");
 		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();

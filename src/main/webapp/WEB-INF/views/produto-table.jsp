@@ -35,18 +35,20 @@
                                     <th style="width: 10px">#</th>
                                     <th>Nome</th>
                                     <th>Quantidade</th>
+                                    <th>Unidade</th>
                                     <th style="width: 132px"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                            	<c:forEach items="${Produtos}" var="unidade">
+                            	<c:forEach items="${Produtos}" var="produto">
                                 <tr>
                                     <td>${produto.id}</td>
                                     <td>${produto.nome}</td>
                                     <td>${produto.quantidade}</td>
+                                    <td>${produto.unidade.simbolo}</td>
                                     <td>
-                                    	<a class="badge badge-success" href="/unidade?up=${produto.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/unidade?del=${produto.id}">Excluir</a>
+                                    	<a class="badge badge-success" href="/produto?up=${produto.id}">Atualizar</a>
+                                    	<a class="badge badge-danger" href="/produto?del=${produto.id}">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>
