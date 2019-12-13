@@ -1,7 +1,6 @@
 package br.edu.ifce.cedro.stockcontrol.controllers;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,10 +44,7 @@ public class ProdutoController extends Controller {
 	}
 
 	@Override
-	protected void setFields(Object item) {
-		for(Iterator<String> i = request.getAttributeNames().asIterator(); i.hasNext();) {
-			System.out.println(i.next());
-		}
+	protected void setFields(Object item) {	
 		((Produto) item).setNome(request.getParameter("nome"));
 		((Produto) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
 		Unidade unidade = new Unidade();
@@ -61,6 +57,7 @@ public class ProdutoController extends Controller {
 		request.setAttribute("id", ((Produto) produto).getId().toString());
 		request.setAttribute("nome", ((Produto) produto).getNome());
 		request.setAttribute("quantidade", ((Produto) produto).getQuantidade().toString());
+		request.setAttribute("unidadeId", ((Produto) produto).getUnidade().getId().toString());
 	}
 	
 	protected void showEmptyForm() throws ServletException, IOException {

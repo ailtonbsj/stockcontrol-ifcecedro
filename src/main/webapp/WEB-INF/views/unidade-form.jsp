@@ -1,4 +1,4 @@
-<%@include file="../header.html"  %>
+<%@include file="../header.jspf"  %>
 
 <section class="content-header">
     <div class="container-fluid">
@@ -26,7 +26,7 @@
                 <!-- general form elements -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Adicionar</h3>
+                        <h3 class="card-title">${operacao}</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
@@ -63,4 +63,4 @@
 <!-- /.content -->
 </div>
 
-<%@include file="../footer.html"  %>
+<%@include file="../footer.jspf"  %>

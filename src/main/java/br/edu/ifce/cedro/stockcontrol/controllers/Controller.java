@@ -24,6 +24,8 @@ public abstract class Controller extends HttpServlet {
 	HttpServletResponse response;
 	
 	protected void showFilledForm(String id) throws ServletException, IOException {
+		request.setAttribute("operacao", "Atualizar");
+		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 		
@@ -81,6 +83,8 @@ public abstract class Controller extends HttpServlet {
 	}
 	
 	protected void listAll() throws ServletException, IOException {
+		request.setAttribute("operacao", "Listar");
+		
 		request.setAttribute(getViewNamePlural(), getList(getModel()));
 		request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
 	}
@@ -115,11 +119,14 @@ public abstract class Controller extends HttpServlet {
 	protected abstract String getModel();
 	
 	protected void showEmptyForm() throws ServletException, IOException {
+		request.setAttribute("operacao", "Adicionar");
 		request.getRequestDispatcher("/WEB-INF/views"+ getUrlName() +"-form.jsp").forward(request, response);
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+		
 		this.request = req;
 		this.response = resp;
 		

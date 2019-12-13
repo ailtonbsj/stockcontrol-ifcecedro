@@ -24,8 +24,8 @@
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <%@include file="navbar.html"  %>
-        <%@include file="aside.html"  %>
+        <%@include file="navbar.jspf"  %>
+        <%@include file="aside.jspf"  %>
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">

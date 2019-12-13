@@ -5,36 +5,37 @@
 		<!-- Add icons to the links using the .nav-icon class
 with font-awesome or any other icon font library -->
 		<li class="nav-header">MENU PRINCIPAL</li>
-		<li class="nav-item has-treeview menu-open"><a href="#"
-			class="nav-link active"> <i class="nav-icon fas fa-edit"></i>
-				<p>
-					Unidades <i class="fas fa-angle-left right"></i>
-				</p>
+		<li class="nav-item has-treeview<c:if test="${viewName == 'Unidades'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'Unidades'}"> active</c:if>">
+			<i class="nav-icon fas fa-edit"></i>
+			<span> Unidades <i class="fas fa-angle-left right"></i>
+			</span>
 		</a>
 			<ul class="nav nav-treeview">
-				<li class="nav-item"><a href="/unidade" class="nav-link active">
+				<li class="nav-item"><a href="/unidade" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<p>Listar</p>
+						<span>Listar</span>
 				</a></li>
 				<li class="nav-item"><a href="/unidade?add" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<p>Adicionar</p>
+						<span>Adicionar</span>
 				</a></li>
 			</ul></li>
-		<li class="nav-item has-treeview"><a href="#" class="nav-link">
+		<li class="nav-item has-treeview<c:if test="${viewName == 'Produtos'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'Produtos'}"> active</c:if>">
 				<i class="nav-icon fas fa-table"></i>
-				<p>
+				<span>
 					Produtos <i class="fas fa-angle-left right"></i>
-				</p>
+				</span>
 		</a>
 			<ul class="nav nav-treeview">
-				<li class="nav-item"><a href="/produto" class="nav-link active">
-						<i class="far fa-circle nav-icon"></i>
-						<p>Listar</p>
+				<li class="nav-item"><a href="/produto" class="nav-link"> <i
+						class="far fa-circle nav-icon"></i>
+						<span>Listar</span>
 				</a></li>
 				<li class="nav-item"><a href="/produto?add" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<p>Adicionar</p>
+						<span>Adicionar</span>
 				</a></li>
 			</ul></li>
 

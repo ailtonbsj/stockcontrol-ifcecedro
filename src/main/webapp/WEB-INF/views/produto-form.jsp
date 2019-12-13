@@ -1,4 +1,4 @@
-<%@include file="../header.html"%>
+<%@include file="../header.jspf"%>
 
 <section class="content-header">
 	<div class="container-fluid">
@@ -27,7 +27,7 @@
 				<!-- general form elements -->
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">Adicionar</h3>
+						<h3 class="card-title">${operacao}</h3>
 					</div>
 					<!-- /.card-header -->
 					<!-- form start -->
@@ -52,8 +52,9 @@
 								<label>Unidade</label> <select name="unidade"
 									class="form-control">
 									<c:forEach items="${unidades}" var="unidade">
-										<option value="${unidade.id}">${unidade.descricao}
-											(${unidade.simbolo})</option>
+										<option value="${unidade.id}"
+											<c:if test="${unidadeId == unidade.id}">selected="selected"</c:if>>
+											${unidade.descricao} (${unidade.simbolo})</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -77,4 +78,4 @@
 <!-- /.content -->
 </div>
 
-<%@include file="../footer.html"%>
+<%@include file="../footer.jspf"%>
