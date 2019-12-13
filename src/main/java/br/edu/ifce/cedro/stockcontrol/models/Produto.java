@@ -12,6 +12,7 @@ public class Produto {
 	private Integer id;
 	private String nome;
 	private Integer quantidade;
+	private Integer minimo;
 	private Unidade unidade;
 	
 	@Id
@@ -34,7 +35,12 @@ public class Produto {
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
 	}
-	
+	public Integer getMinimo() {
+		return minimo;
+	}
+	public void setMinimo(Integer minimo) {
+		this.minimo = minimo;
+	}
 	@ManyToOne
 	@JoinColumn(name = "unidade")
 	public Unidade getUnidade() {

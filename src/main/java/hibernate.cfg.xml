@@ -24,6 +24,7 @@
         <!-- Names the annotated entity class  -->
         <mapping class="br.edu.ifce.cedro.stockcontrol.models.Unidade" />
         <mapping class="br.edu.ifce.cedro.stockcontrol.models.Produto" />
+        <mapping class="br.edu.ifce.cedro.stockcontrol.models.Entrada" />
         
 	</session-factory>
 </hibernate-configuration>

@@ -33,22 +33,16 @@
                             <thead>
                                 <tr>
                                     <th style="width: 10px">#</th>
-                                    <th>Nome</th>
-                                    <th>Quantidade</th>
-                                    <th>Minimo</th>
                                     <th style="width: 132px"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                            	<c:forEach items="${Produtos}" var="produto">
+                            	<c:forEach items="${Entradas}" var="entrada">
                                 <tr>
-                                    <td>${produto.id}</td>
-                                    <td>${produto.nome}</td>
-                                    <td>${produto.quantidade} ${produto.unidade.simbolo}</td>
-                                    <td>${produto.minimo} ${produto.unidade.simbolo}</td>
+                                    <td>${entrada.id}</td>
                                     <td>
-                                    	<a class="badge badge-success" href="/produto?up=${produto.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/produto?del=${produto.id}">Excluir</a>
+                                    	<a class="badge badge-success" href="/entrada?up=${entrada.id}">Atualizar</a>
+                                    	<a class="badge badge-danger" href="/entrada?del=${entrada.id}">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>

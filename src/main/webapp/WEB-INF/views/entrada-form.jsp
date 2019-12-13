@@ -31,37 +31,12 @@
 					</div>
 					<!-- /.card-header -->
 					<!-- form start -->
-					<form role="form" action="/produto" method="post">
+					<form role="form" action="/entrada" method="post">
 						<div class="card-body">
 							<div class="form-group">
 								<label for="idNumber">Id</label> <input name="id" type="text"
 									class="form-control" id="idNumber" placeholder="Id"
 									value="${id}" readonly="readonly">
-							</div>
-							<div class="form-group">
-								<label for="nome">Nome</label> <input name="nome" type="text"
-									class="form-control" id="nome" placeholder="nome"
-									value="${nome}">
-							</div>
-							<div class="form-group">
-								<label for="quantidade">Quantidade</label> <input
-									name="quantidade" type="text" class="form-control"
-									id="quantidade" placeholder="quantidade" value="${quantidade}">
-							</div>
-							<div class="form-group">
-								<label for="minimo">Minimo</label> <input
-									name="minimo" type="text" class="form-control"
-									id="minimo" placeholder="minimo" value="${minimo}">
-							</div>
-							<div class="form-group">
-								<label>Unidade</label> <select name="unidade"
-									class="form-control">
-									<c:forEach items="${unidades}" var="unidade">
-										<option value="${unidade.id}"
-											<c:if test="${unidadeId == unidade.id}">selected="selected"</c:if>>
-											${unidade.descricao} (${unidade.simbolo})</option>
-									</c:forEach>
-								</select>
 							</div>
 						</div>
 						<!-- /.card-body -->

@@ -47,6 +47,7 @@ public class ProdutoController extends Controller {
 	protected void setFields(Object item) {	
 		((Produto) item).setNome(request.getParameter("nome"));
 		((Produto) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
+		((Produto) item).setMinimo(Integer.valueOf(request.getParameter("minimo")));
 		Unidade unidade = new Unidade();
 		unidade.setId(Integer.valueOf(request.getParameter("unidade")));
 		((Produto) item).setUnidade(unidade);
@@ -57,6 +58,7 @@ public class ProdutoController extends Controller {
 		request.setAttribute("id", ((Produto) produto).getId().toString());
 		request.setAttribute("nome", ((Produto) produto).getNome());
 		request.setAttribute("quantidade", ((Produto) produto).getQuantidade().toString());
+		request.setAttribute("minimo", ((Produto) produto).getMinimo().toString());
 		request.setAttribute("unidadeId", ((Produto) produto).getUnidade().getId().toString());
 	}
 	
