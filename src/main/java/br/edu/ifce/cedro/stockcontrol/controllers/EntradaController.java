@@ -10,6 +10,7 @@ import org.hibernate.Session;
 
 import br.edu.ifce.cedro.stockcontrol.models.Entrada;
 import br.edu.ifce.cedro.stockcontrol.models.Produto;
+import br.edu.ifce.cedro.stockcontrol.models.Unidade;
 
 @WebServlet(urlPatterns = "/entrada")
 public class EntradaController extends Controller {
@@ -34,14 +35,27 @@ public class EntradaController extends Controller {
 	}
 	
 	@Override
+	protected void setFields(Object item) {
+		((Entrada) item).setData(new Date());
+		((Entrada) item).setFornecedor(request.getParameter("fornecedor"));
+		((Entrada) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
+		((Entrada) item).setValidade(new Date());
+		Produto p = new Produto();
+		p.setId(Integer.parseInt(request.getParameter("produto")));
+		((Entrada) item).setProduto(p);
+		((Entrada) item).setObservacao(request.getParameter("observacao"));
+	}
+	
+	@Override
+	protected void showEmptyForm() throws ServletException, IOException {
+		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
+		super.showEmptyForm();
+	}
+	
+	@Override
 	protected void add(Session session) {
 		Entrada entrada = new Entrada();
-		entrada.setData(new Date());
-		entrada.setFornecedor("Joao");
-		entrada.setQuantidade(2);
-		entrada.setValidade(new Date());
-		entrada.setProduto(session.get(Produto.class, 3));
-		//setFields((Object) entrada);
+		setFields((Object) entrada);
 		session.beginTransaction();
 		session.save(entrada);
 		session.getTransaction().commit();

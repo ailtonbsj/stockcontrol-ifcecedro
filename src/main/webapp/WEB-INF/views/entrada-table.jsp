@@ -33,6 +33,12 @@
                             <thead>
                                 <tr>
                                     <th style="width: 10px">#</th>
+                                    <th>Produto</th>
+                                    <th>Fornecedor</th>
+                                    <th>Quantidade</th>
+                                    <th>Validade</th>
+                                    <th>Data de entrada</th>
+                                    <th>Observação</th>
                                     <th style="width: 132px"></th>
                                 </tr>
                             </thead>
@@ -40,6 +46,12 @@
                             	<c:forEach items="${Entradas}" var="entrada">
                                 <tr>
                                     <td>${entrada.id}</td>
+                                    <td>${entrada.produto.nome}</td>
+                                    <td>${entrada.fornecedor}</td>
+                                    <td>${entrada.quantidade} ${entrada.produto.unidade.simbolo}</td>
+                                    <td>${entrada.validade}</td>
+                                    <td>${entrada.data}</td>
+                                    <td>${entrada.observacao}</td>
                                     <td>
                                     	<a class="badge badge-success" href="/entrada?up=${entrada.id}">Atualizar</a>
                                     	<a class="badge badge-danger" href="/entrada?del=${entrada.id}">Excluir</a>
