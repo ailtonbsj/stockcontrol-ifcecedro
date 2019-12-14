@@ -6,14 +6,15 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
-import br.edu.ifce.cedro.stockcontrol.models.Entrada;
 import br.edu.ifce.cedro.stockcontrol.models.Produto;
 import br.edu.ifce.cedro.stockcontrol.models.Saida;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/saida")
-public class SaidaController extends Controller {
+public class SaidaController extends EstoqueController {
 	@Override
 	protected String getUrlName() {
 		return "/saida";
@@ -74,6 +75,25 @@ public class SaidaController extends Controller {
 		setFields((Object) saida);
 		session.beginTransaction();
 		session.save(saida);
-		session.getTransaction().commit();		
+		session.getTransaction().commit();
+		refreshAmount(session, saida.getProduto().getId());
+	}
+	
+	@Override
+	protected void update(Session session, String id) {
+		super.update(session, id);
+		Saida sd = session.get(Saida.class, Integer.parseInt(id));
+		refreshAmount(session, sd.getProduto().getId());
+	}
+	
+	@Override
+	protected void remove(String id) throws IOException {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+		Saida sd = session.get(Saida.class, Integer.parseInt(id));
+		int produtoId = sd.getProduto().getId();
+		super.remove(id);
+		refreshAmount(session, produtoId);
+		session.close();
 	}
 }

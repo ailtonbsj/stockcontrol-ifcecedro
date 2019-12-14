@@ -46,7 +46,7 @@
                                     <td>${unidade.descricao}</td>
                                     <td>
                                     	<a class="badge badge-success" href="/unidade?up=${unidade.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/unidade?del=${unidade.id}">Excluir</a>
+                                    	<a class="badge badge-danger" href="/unidade?del=${unidade.id}" onclick="return confirmDel()">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>

@@ -6,13 +6,15 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.models.Entrada;
 import br.edu.ifce.cedro.stockcontrol.models.Produto;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/entrada")
-public class EntradaController extends Controller {
+public class EntradaController extends EstoqueController {
 	@Override
 	protected String getUrlName() {
 		return "/entrada";
@@ -76,5 +78,24 @@ public class EntradaController extends Controller {
 		session.beginTransaction();
 		session.save(entrada);
 		session.getTransaction().commit();
+		refreshAmount(session, entrada.getProduto().getId());
+	}
+	
+	@Override
+	protected void update(Session session, String id) {
+		super.update(session, id);
+		Entrada en = session.get(Entrada.class, Integer.parseInt(id));
+		refreshAmount(session, en.getProduto().getId());
+	}
+	
+	@Override
+	protected void remove(String id) throws IOException {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+		Entrada en = session.get(Entrada.class, Integer.parseInt(id));
+		int produtoId = en.getProduto().getId();
+		super.remove(id);
+		refreshAmount(session, produtoId);
+		session.close();
 	}
 }

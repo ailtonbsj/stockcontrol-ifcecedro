@@ -64,6 +64,7 @@ public class ProdutoController extends Controller {
 	
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
+		request.setAttribute("quantidade", "0");
 		super.showEmptyForm();
 	}
 	

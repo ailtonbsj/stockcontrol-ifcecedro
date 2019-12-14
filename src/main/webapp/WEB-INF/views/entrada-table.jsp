@@ -58,7 +58,7 @@
                                     <td>${entrada.observacao}</td>
                                     <td>
                                     	<a class="badge badge-success" href="/entrada?up=${entrada.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/entrada?del=${entrada.id}">Excluir</a>
+                                    	<a class="badge badge-danger" href="/entrada?del=${entrada.id}" onclick="return confirmDel()">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>

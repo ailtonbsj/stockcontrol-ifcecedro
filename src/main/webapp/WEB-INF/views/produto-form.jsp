@@ -46,7 +46,7 @@
 							<div class="form-group">
 								<label for="quantidade">Quantidade</label> <input
 									name="quantidade" type="text" class="form-control"
-									id="quantidade" placeholder="quantidade" value="${quantidade}">
+									id="quantidade" placeholder="quantidade" value="${quantidade}" readonly="readonly">
 							</div>
 							<div class="form-group">
 								<label for="minimo">Minimo</label> <input

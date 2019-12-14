@@ -48,7 +48,7 @@
                                     <td>${produto.minimo} ${produto.unidade.simbolo}</td>
                                     <td>
                                     	<a class="badge badge-success" href="/produto?up=${produto.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/produto?del=${produto.id}">Excluir</a>
+                                    	<a class="badge badge-danger" href="/produto?del=${produto.id}" onclick="return confirmDel()">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>
