@@ -1,10 +1,6 @@
 package br.edu.ifce.cedro.stockcontrol.controllers;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,8 +9,8 @@ import org.hibernate.Session;
 
 import br.edu.ifce.cedro.stockcontrol.models.Entrada;
 import br.edu.ifce.cedro.stockcontrol.models.Produto;
-import br.edu.ifce.cedro.stockcontrol.models.Unidade;
 
+@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/entrada")
 public class EntradaController extends Controller {
 	@Override

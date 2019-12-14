@@ -1,15 +1,22 @@
 <!-- /.content-wrapper -->
 <footer class="main-footer">
-    <div class="float-right d-none d-sm-block">
-        <b>Version</b> 0.0.1
-    </div>
-    <strong>Copyright &copy; 2019 <a href="https://ailtonbsj.github.io/">IFCE-Cedro POO Team</a>.</strong> All rights
-    reserved.
+	<div class="float-right d-none d-sm-block">
+		<b>Version</b> 0.0.1
+	</div>
+	<strong>Copyright &copy; 2019 <a
+		href="https://ailtonbsj.github.io/">IFCE-Cedro POO Team</a>.
+	</strong> All rights reserved.
 </footer>
 </div>
 <!-- ./wrapper -->
 
 <!-- AdminLTE App -->
 <script src="js/adminlte.min.js"></script>
+<script>
+	function confirmDel() {
+		doIt = confirm('Tem certeza que vai remover???');
+		if (!doIt) return false;
+	}
+</script>
 </body>
 </html>

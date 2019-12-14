@@ -25,6 +25,7 @@
         <mapping class="br.edu.ifce.cedro.stockcontrol.models.Unidade" />
         <mapping class="br.edu.ifce.cedro.stockcontrol.models.Produto" />
         <mapping class="br.edu.ifce.cedro.stockcontrol.models.Entrada" />
+        <mapping class="br.edu.ifce.cedro.stockcontrol.models.Saida" />
         
 	</session-factory>
 </hibernate-configuration>

@@ -31,7 +31,7 @@
 					</div>
 					<!-- /.card-header -->
 					<!-- form start -->
-					<form role="form" action="/entrada" method="post">
+					<form role="form" action="/saida" method="post">
 						<div class="card-body">
 							<div class="form-group">
 								<label for="idNumber">Id</label> <input name="id" type="text"
@@ -44,7 +44,7 @@
 									<c:forEach items="${produtos}" var="produto">
 										<option value="${produto.id}"
 											<c:if test="${produtoId == produto.id}">selected="selected"</c:if>>
-											${produto.nome}</option>
+											${produto.nome} (${produto.unidade.descricao})</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -59,10 +59,10 @@
 									id="quantidade" placeholder="Quantidade" value="${quantidade}">
 							</div>
 							<div class="form-group">
-								<label for="data">Data de saida</label>
+								<label for="data">Data de saída</label>
 								<div class="input-group">
-									<input type="datetime-local" class="form-control float-right"
-										id="data" placeholder="Validade" value="${data}">
+									<input name="data" type="datetime-local" class="form-control float-right"
+										id="data" placeholder="Data de entrada" value="${data}">
 									<div class="input-group-append">
 										<span class="input-group-text"> <i
 											class="far fa-calendar-alt"></i>
