@@ -57,6 +57,24 @@ with font-awesome or any other icon font library -->
 				</a></li>
 			</ul>
 		</li>
+		<li class="nav-item has-treeview<c:if test="${viewName == 'Saidas'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'Saidas'}"> active</c:if>">
+				<i class="nav-icon fas fa-table"></i>
+				<span>
+					Saidas <i class="fas fa-angle-left right"></i>
+				</span>
+		</a>
+			<ul class="nav nav-treeview">
+				<li class="nav-item"><a href="/saida" class="nav-link"> <i
+						class="far fa-circle nav-icon"></i>
+						<span>Listar</span>
+				</a></li>
+				<li class="nav-item"><a href="/saida?add" class="nav-link">
+						<i class="far fa-circle nav-icon"></i>
+						<span>Adicionar</span>
+				</a></li>
+			</ul>
+		</li>
 	</ul>
 </nav>
 <!-- /.sidebar-menu -->

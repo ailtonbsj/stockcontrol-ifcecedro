@@ -49,8 +49,12 @@
                                     <td>${entrada.produto.nome}</td>
                                     <td>${entrada.fornecedor}</td>
                                     <td>${entrada.quantidade} ${entrada.produto.unidade.simbolo}</td>
-                                    <td>${entrada.validade}</td>
-                                    <td>${entrada.data}</td>
+                                    <td>
+                                    <fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${entrada.validade}" />
+                                    </td>
+                                    <td>                                    
+                                    <fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${entrada.data}" />
+         							</td>
                                     <td>${entrada.observacao}</td>
                                     <td>
                                     	<a class="badge badge-success" href="/entrada?up=${entrada.id}">Atualizar</a>

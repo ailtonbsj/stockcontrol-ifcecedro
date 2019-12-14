@@ -19,7 +19,6 @@ public class Estoque {
 	private Produto produto;
 	private Integer quantidade;
 	private Date data;
-	private Date validade;
 	private String observacao;
 	
 	@Id
@@ -51,12 +50,7 @@ public class Estoque {
 	public void setData(Date data) {
 		this.data = data;
 	}
-	public Date getValidade() {
-		return validade;
-	}
-	public void setValidade(Date validade) {
-		this.validade = validade;
-	}
+
 	public String getObservacao() {
 		return observacao;
 	}

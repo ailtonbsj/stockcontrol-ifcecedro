@@ -44,14 +44,14 @@
 									<c:forEach items="${produtos}" var="produto">
 										<option value="${produto.id}"
 											<c:if test="${produtoId == produto.id}">selected="selected"</c:if>>
-											${produto.nome} (${produto.unidade.descricao})</option>
+											${produto.nome}</option>
 									</c:forEach>
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="fornecedor">Fornecedor</label> <input
-									name="fornecedor" type="text" class="form-control"
-									id="fornecedor" placeholder="Fornecedor" value="${fornecedor}">
+								<label for="retirante">Retirante</label> <input
+									name="retirante" type="text" class="form-control"
+									id="retirante" placeholder="Retirante" value="${retirante}">
 							</div>
 							<div class="form-group">
 								<label for="quantidade">Quantidade</label> <input
@@ -59,22 +59,10 @@
 									id="quantidade" placeholder="Quantidade" value="${quantidade}">
 							</div>
 							<div class="form-group">
-								<label for="validade">Validade</label>
+								<label for="data">Data de saida</label>
 								<div class="input-group">
-									<input name="validade" type="datetime-local" class="form-control float-right"
-										id="validade" placeholder="Validade" value="${validade}">
-									<div class="input-group-append">
-										<span class="input-group-text"> <i
-											class="far fa-calendar-alt"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="data">Data de entrada</label>
-								<div class="input-group">
-									<input name="data" type="datetime-local" class="form-control float-right"
-										id="data" placeholder="Data de entrada" value="${data}">
+									<input type="datetime-local" class="form-control float-right"
+										id="data" placeholder="Validade" value="${data}">
 									<div class="input-group-append">
 										<span class="input-group-text"> <i
 											class="far fa-calendar-alt"></i>

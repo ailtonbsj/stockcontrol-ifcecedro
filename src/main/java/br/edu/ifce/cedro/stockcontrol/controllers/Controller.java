@@ -1,7 +1,12 @@
 package br.edu.ifce.cedro.stockcontrol.controllers;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -80,6 +85,24 @@ public abstract class Controller extends HttpServlet {
 		
 	    session.close();
 	    return list;
+	}
+	
+	public static String dateToDateTimeLocal(Date date) {  
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+		return df.format(date);
+	}
+	
+	public static String dateToDateTimeLocal() {
+		Date date = Calendar.getInstance().getTime();  
+		return dateToDateTimeLocal(date);
+	}
+	
+	public static Date dateTimeLocalToDate(String datetimeLocal) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(datetimeLocal);
+		} catch (ParseException e) {
+			return new Date();
+		}
 	}
 	
 	protected void listAll() throws ServletException, IOException {
