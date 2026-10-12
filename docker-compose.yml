@@ -20,6 +20,10 @@ services:
   app:
     build: .
     container_name: stockcontrol-app
+    environment:
+      # Popula o banco com dados fictícios quando as tabelas estão vazias.
+      # Use "false" para iniciar com o banco em branco.
+      APP_SEED: "true"
     ports:
       - "8080:8080"
     depends_on:

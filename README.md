@@ -21,6 +21,25 @@ Foi utilizado o banco de banco MySQL disponível da suíte XAMPP utilizando o am
 
 O sistema também funciona para ambientes linux teste que configurados adequadamente.
 
+## Docker
+
+```bash
+docker compose up --build
+```
+
+A aplicação fica disponível em <http://localhost:8080> e o banco sobe junto, já com
+dados fictícios de exemplo (unidades, produtos, entradas e saídas).
+
+- O povoamento acontece apenas quando o banco está vazio, então reiniciar o container
+  não duplica os dados. Para recomeçar do zero, é preciso apagar o volume:
+
+  ```bash
+  docker compose down -v && docker compose up --build
+  ```
+
+- Para iniciar com o banco em branco, defina `APP_SEED: "false"` no serviço `app`
+  do `docker-compose.yml`.
+
 ## Equipe
 
 - Fabrício
