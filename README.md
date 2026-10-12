@@ -40,6 +40,18 @@ dados fictícios de exemplo (unidades, produtos, entradas e saídas).
 - Para iniciar com o banco em branco, defina `APP_SEED: "false"` no serviço `app`
   do `docker-compose.yml`.
 
+- O MySQL sobe com `utf8mb4` para os acentos não se corromperem. Tabelas criadas por
+  versões anteriores ficaram em `latin1` e só são corrigidas recriando o volume com
+  `docker compose down -v`.
+
+## Regras de exclusão
+
+- **Unidade** em uso por algum produto não pode ser excluída.
+- **Produto** com movimentações de estoque (entradas ou saídas) não pode ser excluído.
+
+Nas duas situações a exclusão é recusada e a tela informa o motivo, em vez de deixar
+uma referência órfã que quebraria as demais telas.
+
 ## Equipe
 
 - Fabrício

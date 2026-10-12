@@ -59,7 +59,7 @@
 									id="quantidade" placeholder="Quantidade" value="${quantidade}">
 							</div>
 							<div class="form-group">
-								<label for="data">Data de saída</label>
+								<label for="data">Data de saÃ­da</label>
 								<div class="input-group">
 									<input name="data" type="datetime-local" class="form-control float-right"
 										id="data" placeholder="Data de entrada" value="${data}">
@@ -71,9 +71,9 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="observacao">Observação</label> <input
+								<label for="observacao">ObservaÃ§Ã£o</label> <input
 									name="observacao" type="text" class="form-control"
-									id="observacao" placeholder="Observação" value="${observacao}">
+									id="observacao" placeholder="ObservaÃ§Ã£o" value="${observacao}">
 							</div>
 							
 							<!-- 							<div class="form-group"> -->

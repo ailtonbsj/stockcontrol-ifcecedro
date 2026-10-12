@@ -2,6 +2,12 @@ services:
   db:
     image: mysql:5.7
     container_name: stockcontrol-db
+    command:
+      # O hbm2ddl cria as tabelas sem declarar charset, então o padrão do
+      # servidor define a codificacao. Sem isso as tabelas nascem em latin1 e
+      # os acentos ficam corrompidos.
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: stockcontrol-ifce

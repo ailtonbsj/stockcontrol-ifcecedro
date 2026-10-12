@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.hibernate.Session;
 
+import br.edu.ifce.cedro.stockcontrol.models.Estoque;
 import br.edu.ifce.cedro.stockcontrol.models.Produto;
 import br.edu.ifce.cedro.stockcontrol.models.Unidade;
 
@@ -71,5 +72,17 @@ public class ProdutoController extends Controller {
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
 		super.showFilledForm(id);
+	}
+
+	@Override
+	protected String verificaRemocao(String id) {
+		long movimentacoes = contaDependencias(Estoque.class.getCanonicalName(), "produto", id);
+
+		if (movimentacoes > 0) {
+			return "Este produto possui " + movimentacoes
+					+ " movimentação(ões) de estoque e não pode ser excluído.";
+		}
+
+		return null;
 	}
 }

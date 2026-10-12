@@ -89,13 +89,16 @@ public class EntradaController extends EstoqueController {
 	}
 	
 	@Override
-	protected void remove(String id) throws IOException {
+	protected boolean remove(String id) throws IOException {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 		Entrada en = session.get(Entrada.class, Integer.parseInt(id));
 		int produtoId = en.getProduto().getId();
-		super.remove(id);
-		refreshAmount(session, produtoId);
+		boolean excluido = super.remove(id);
+		if (excluido) {
+			refreshAmount(session, produtoId);
+		}
 		session.close();
+		return excluido;
 	}
 }

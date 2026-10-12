@@ -22,6 +22,9 @@
         <div class="row">
             <!-- left column -->
             <div class="col-md-12">
+                <c:if test="${not empty param.erro}">
+                    <div class="alert alert-danger" role="alert">${param.erro}</div>
+                </c:if>
                 <!-- INICIO TABELA -->
                 <div class="card">
                     <div class="card-header">
@@ -36,8 +39,8 @@
                                     <th>Produto</th>
                                     <th>Retirante</th>
                                     <th>Quantidade</th>
-                                    <th>Data de saída</th>
-                                    <th>Observação</th>
+                                    <th>Data de saÃ­da</th>
+                                    <th>ObservaÃ§Ã£o</th>
                                     <th style="width: 132px"></th>
                                 </tr>
                             </thead>

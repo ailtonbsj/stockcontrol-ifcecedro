@@ -4,6 +4,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.hibernate.Session;
 
+import br.edu.ifce.cedro.stockcontrol.models.Produto;
 import br.edu.ifce.cedro.stockcontrol.models.Unidade;
 
 @SuppressWarnings("serial")
@@ -47,5 +48,16 @@ public class UnidadeController extends Controller {
 		session.beginTransaction();
 		session.save(unidade);
 		session.getTransaction().commit();
+	}
+
+	@Override
+	protected String verificaRemocao(String id) {
+		long produtos = contaDependencias(Produto.class.getCanonicalName(), "unidade", id);
+
+		if (produtos > 0) {
+			return "Esta unidade está em uso por " + produtos + " produto(s) e não pode ser excluída.";
+		}
+
+		return null;
 	}
 }

@@ -87,13 +87,16 @@ public class SaidaController extends EstoqueController {
 	}
 	
 	@Override
-	protected void remove(String id) throws IOException {
+	protected boolean remove(String id) throws IOException {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 		Saida sd = session.get(Saida.class, Integer.parseInt(id));
 		int produtoId = sd.getProduto().getId();
-		super.remove(id);
-		refreshAmount(session, produtoId);
+		boolean excluido = super.remove(id);
+		if (excluido) {
+			refreshAmount(session, produtoId);
+		}
 		session.close();
+		return excluido;
 	}
 }

@@ -22,6 +22,9 @@
         <div class="row">
             <!-- left column -->
             <div class="col-md-12">
+                <c:if test="${not empty param.erro}">
+                    <div class="alert alert-danger" role="alert">${param.erro}</div>
+                </c:if>
                 <!-- INICIO TABELA -->
                 <div class="card">
                     <div class="card-header">

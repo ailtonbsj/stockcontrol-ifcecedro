@@ -7,6 +7,12 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
+	<properties>
+		<!-- Sem isso o javac depende do locale da maquina e os acentos
+			 dos fontes podem ser corrompidos na compilacao. -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/javax/javaee-web-api -->
 		<dependency>

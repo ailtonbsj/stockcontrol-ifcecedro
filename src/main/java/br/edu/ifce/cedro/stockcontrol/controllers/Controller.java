@@ -1,6 +1,7 @@
 package br.edu.ifce.cedro.stockcontrol.controllers;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,7 +47,13 @@ public abstract class Controller extends HttpServlet {
 		session.close();
 	}
 	
-	protected void remove(String id) throws IOException {
+	protected boolean remove(String id) throws IOException {
+		String bloqueio = verificaRemocao(id);
+		if (bloqueio != null) {
+			response.sendRedirect(getUrlName() + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
+			return false;
+		}
+
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
@@ -63,6 +70,30 @@ public abstract class Controller extends HttpServlet {
 		
 		response.sendRedirect(getUrlName());
 		session.close();
+		return true;
+	}
+	
+	/**
+	 * Verifica se o registro pode ser excluído. Retorna a mensagem de erro quando
+	 * existem dependências que impedem a remoção, ou null quando não há impediments.
+	 */
+	protected String verificaRemocao(String id) {
+		return null;
+	}
+	
+	/** Quantos registros da entidade informada apontam para o registro id. */
+	protected static long contaDependencias(String modelName, String campo, String id) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			return session.createQuery(
+					"select count(*) from " + modelName + " where " + campo + ".id = :id", Long.class)
+					.setParameter("id", Integer.valueOf(id)).uniqueResult();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 	
 	protected static List<Object> getList(String modelName) throws ServletException, IOException {
@@ -151,6 +182,9 @@ public abstract class Controller extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 		
+		// As páginas são servidas em UTF-8: sem isso os acentos digitados nos
+		// formulários chegariam decodificados como ISO-8859-1.
+		req.setCharacterEncoding("UTF-8");
 		this.request = req;
 		this.response = resp;
 		
@@ -168,6 +202,7 @@ public abstract class Controller extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		req.setCharacterEncoding("UTF-8");
 		this.request = req;
 		this.response = resp;
 		
