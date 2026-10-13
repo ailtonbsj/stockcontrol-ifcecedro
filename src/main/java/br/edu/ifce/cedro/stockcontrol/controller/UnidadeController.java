@@ -2,14 +2,8 @@ package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -108,27 +102,10 @@ public class UnidadeController extends HttpServlet {
 		}
 	}
 	
-	protected static List<Unidade> getList() throws ServletException, IOException {
-		List<Unidade> list = new ArrayList<>();
-		
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-		
-		CriteriaBuilder cb =  session.getCriteriaBuilder();
-		CriteriaQuery<Unidade> cq = (CriteriaQuery<Unidade>) cb.createQuery(Unidade.class);
-		Root<Unidade> rootEntry = (Root<Unidade>) cq.from(Unidade.class);
-		CriteriaQuery<Unidade> all = cq.select(rootEntry);
-		TypedQuery<Unidade> allQuery = session.createQuery(all);
-		list = allQuery.getResultList();
-		
-	    session.close();
-	    return list;
-	}
-	
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 		
-		request.setAttribute(viewNamePlural, getList());
+		request.setAttribute(viewNamePlural, dao.listar());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 	

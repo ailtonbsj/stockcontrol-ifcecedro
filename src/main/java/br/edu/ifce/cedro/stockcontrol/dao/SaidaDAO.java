@@ -1,6 +1,10 @@
 package br.edu.ifce.cedro.stockcontrol.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
 
@@ -29,5 +33,18 @@ public class SaidaDAO {
 	 */
 	public Saida buscarPorId(Session session, Integer id) {
 		return session.get(Saida.class, id);
+	}
+
+	/** Todas as saídas, para montar a lista da tela. */
+	public List<Saida> listar() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			return session.createQuery("from " + Saida.class.getCanonicalName(), Saida.class).getResultList();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 }

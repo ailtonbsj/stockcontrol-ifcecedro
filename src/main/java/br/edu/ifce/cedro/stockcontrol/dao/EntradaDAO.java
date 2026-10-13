@@ -1,6 +1,10 @@
 package br.edu.ifce.cedro.stockcontrol.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.model.Entrada;
 
@@ -29,5 +33,18 @@ public class EntradaDAO {
 	 */
 	public Entrada buscarPorId(Session session, Integer id) {
 		return session.get(Entrada.class, id);
+	}
+
+	/** Todas as entradas, para montar a lista da tela. */
+	public List<Entrada> listar() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			return session.createQuery("from " + Entrada.class.getCanonicalName(), Entrada.class).getResultList();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 }

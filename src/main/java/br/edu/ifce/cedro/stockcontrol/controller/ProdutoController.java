@@ -2,14 +2,8 @@ package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +15,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
+import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import mapper.ProdutoMapper;
 
@@ -32,6 +27,7 @@ public class ProdutoController extends HttpServlet {
 	HttpServletResponse response;
 
 	private final ProdutoDAO dao = new ProdutoDAO();
+	private final UnidadeDAO unidadeDao = new UnidadeDAO();
 
 	private final String viewNamePlural = "Produtos";
 	private final String urlName = "/produto";
@@ -55,7 +51,7 @@ public class ProdutoController extends HttpServlet {
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("unidades", UnidadeController.getList());
+		request.setAttribute("unidades", unidadeDao.listar());
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
@@ -110,27 +106,10 @@ public class ProdutoController extends HttpServlet {
 		}
 	}
 
-	protected static List<Produto> getList() throws ServletException, IOException {
-		List<Produto> list = new ArrayList<>();
-
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		CriteriaBuilder cb =  session.getCriteriaBuilder();
-		CriteriaQuery<Produto> cq = (CriteriaQuery<Produto>) cb.createQuery(Produto.class);
-		Root<Produto> rootEntry = (Root<Produto>) cq.from(Produto.class);
-		CriteriaQuery<Produto> all = cq.select(rootEntry);
-	    TypedQuery<Produto> allQuery = session.createQuery(all);
-	    list = allQuery.getResultList();
-
-	    session.close();
-	    return list;
-	}
-
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(viewNamePlural, getList());
+		request.setAttribute(viewNamePlural, dao.listar());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
@@ -149,7 +128,7 @@ public class ProdutoController extends HttpServlet {
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("unidades", UnidadeController.getList());
+		request.setAttribute("unidades", unidadeDao.listar());
 		request.setAttribute("quantidade", "0");
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}

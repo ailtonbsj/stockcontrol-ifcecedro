@@ -2,14 +2,8 @@ package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -57,7 +51,7 @@ public class SaidaController extends HttpServlet {
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", ProdutoController.getList());
+		request.setAttribute("produtos", produtoDao.listar());
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
@@ -117,27 +111,10 @@ public class SaidaController extends HttpServlet {
 		}
 	}
 
-	protected static List<Saida> getList() throws ServletException, IOException {
-		List<Saida> list = new ArrayList<>();
-
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		CriteriaBuilder cb =  session.getCriteriaBuilder();
-		CriteriaQuery<Saida> cq = (CriteriaQuery<Saida>) cb.createQuery(Saida.class);
-		Root<Saida> rootEntry = (Root<Saida>) cq.from(Saida.class);
-		CriteriaQuery<Saida> all = cq.select(rootEntry);
-	    TypedQuery<Saida> allQuery = session.createQuery(all);
-	    list = allQuery.getResultList();
-
-	    session.close();
-	    return list;
-	}
-
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(viewNamePlural, getList());
+		request.setAttribute(viewNamePlural, dao.listar());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
@@ -161,7 +138,7 @@ public class SaidaController extends HttpServlet {
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("produtos", ProdutoController.getList());
+		request.setAttribute("produtos", produtoDao.listar());
 		request.setAttribute("data", dateToDateTimeLocal());
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}

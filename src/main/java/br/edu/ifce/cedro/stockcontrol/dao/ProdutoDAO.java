@@ -1,5 +1,7 @@
 package br.edu.ifce.cedro.stockcontrol.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -27,6 +29,19 @@ public class ProdutoDAO {
 		session.beginTransaction();
 		session.save(produto);
 		session.getTransaction().commit();
+	}
+
+	/** Todos os produtos, para montar a lista e o preenchimento dos formulários. */
+	public List<Produto> listar() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			return session.createQuery("from " + Produto.class.getCanonicalName(), Produto.class).getResultList();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 
 	/**

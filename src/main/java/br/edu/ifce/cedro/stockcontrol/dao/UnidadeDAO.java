@@ -1,5 +1,7 @@
 package br.edu.ifce.cedro.stockcontrol.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -25,6 +27,19 @@ public class UnidadeDAO {
 		session.beginTransaction();
 		session.save(unidade);
 		session.getTransaction().commit();
+	}
+
+	/** Todas as unidades, para montar a lista e o preenchimento dos formulários. */
+	public List<Unidade> listar() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			return session.createQuery("from " + Unidade.class.getCanonicalName(), Unidade.class).getResultList();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 
 	/** Quantos produtos estão usando a unidade informada. */
