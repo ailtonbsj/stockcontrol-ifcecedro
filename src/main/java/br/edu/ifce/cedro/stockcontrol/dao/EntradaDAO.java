@@ -12,19 +12,46 @@ import br.edu.ifce.cedro.stockcontrol.model.Entrada;
  * Acesso aos dados da entrada de estoque. O {@code EntradaController} cuida da
  * requisição e da apresentação; toda a conversa com o Hibernate fica aqui.
  *
- * As operações recebem a {@link Session} aberta pelo controller, para não
- * duplicar a transação nem abrir uma segunda sessão no meio da requisição.
+ * As operações de escrita abrem e fecham a própria sessão, para que o
+ * controller cuide só da requisição e da apresentação.
  */
 public class EntradaDAO {
 
 	/**
-	 * Grava uma nova entrada. A transação é a da sessão recebida, que já está
-	 * aberta pelo controller.
+	 * Grava uma nova entrada, abrindo e fechando a própria sessão para que o
+	 * controller não precise conhecer o Hibernate.
 	 */
-	public void salvar(Session session, Entrada entrada) {
-		session.beginTransaction();
-		session.save(entrada);
-		session.getTransaction().commit();
+	public void salvar(Entrada entrada) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.save(entrada);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
+	/**
+	 * Grava as alterações de uma entrada já existente. A instância chega
+	 * desanexada, com a chave preenchida, e é mesclada na sessão que o próprio DAO
+	 * abre: o controller não precisa carregar o registro antes de gravar.
+	 */
+	public void atualizar(Entrada entrada) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.merge(entrada);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 
 	/**

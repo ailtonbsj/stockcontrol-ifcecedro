@@ -31,14 +31,9 @@ public class UnidadeController extends HttpServlet {
 	private final String urlName = "/unidade";
 	
 	protected void add() {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		Unidade unidade = new Unidade();
 		UnidadeMapper.toModel(unidade, request);
-		dao.salvar(session, unidade);
-
-		session.close();
+		dao.salvar(unidade);
 	}
 
 	protected String verificaRemocao(String id) {
@@ -115,21 +110,15 @@ public class UnidadeController extends HttpServlet {
 	}
 	
 	protected void update(String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		Unidade unidade;
 		try {
-			unidade = session.get(Unidade.class, Integer.parseInt(id));
+			Unidade unidade = new Unidade();
+			unidade.setId(Integer.parseInt(id));
 			UnidadeMapper.toModel(unidade, request);
-			session.beginTransaction();
-			session.update(unidade);
-			session.getTransaction().commit();
+
+			dao.atualizar(unidade);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		session.close();
 	}
 	
 	protected void showEmptyForm() throws ServletException, IOException {

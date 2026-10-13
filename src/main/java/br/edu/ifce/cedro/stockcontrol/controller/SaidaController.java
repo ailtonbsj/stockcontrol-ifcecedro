@@ -35,15 +35,10 @@ public class SaidaController extends HttpServlet {
 	private final String urlName = "/saida";
 
 	protected void add() {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		Saida saida = new Saida();
 		SaidaMapper.toModel(saida, request);
-		dao.salvar(session, saida);
-		produtoDao.recalcularSaldo(session, saida.getProduto().getId());
-
-		session.close();
+		dao.salvar(saida);
+		produtoDao.recalcularSaldo(saida.getProduto().getId());
 	}
 
 	/**
@@ -96,7 +91,7 @@ public class SaidaController extends HttpServlet {
 
 		response.sendRedirect(urlName);
 
-		produtoDao.recalcularSaldo(session, produtoId);
+		produtoDao.recalcularSaldo(produtoId);
 		session.close();
 		return true;
 	}
@@ -124,26 +119,19 @@ public class SaidaController extends HttpServlet {
 	}
 
 	protected void update(String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		Saida saida;
 		try {
-			saida = session.get(Saida.class, Integer.parseInt(id));
+			Saida saida = new Saida();
+			saida.setId(Integer.parseInt(id));
 			SaidaMapper.toModel(saida, request);
-			session.beginTransaction();
-			session.update(saida);
-			session.getTransaction().commit();
+
+			dao.atualizar(saida);
+
+			// O saldo segue o produto que veio do formulário: é essa a referência que
+			// o mapper acabou de gravar na movimentação.
+			produtoDao.recalcularSaldo(saida.getProduto().getId());
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		// Precisa ser depois do update: o mapper troca a referência do produto pela
-		// que veio do formulário, e é essa a que o saldo deve ser recalculado.
-		Saida sd = dao.buscarPorId(session, Integer.parseInt(id));
-		produtoDao.recalcularSaldo(session, sd.getProduto().getId());
-
-		session.close();
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {

@@ -35,15 +35,10 @@ public class EntradaController extends HttpServlet {
 	private final String urlName = "/entrada";
 
 	protected void add() {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		Entrada entrada = new Entrada();
 		EntradaMapper.toModel(entrada, request);
-		dao.salvar(session, entrada);
-		produtoDao.recalcularSaldo(session, entrada.getProduto().getId());
-
-		session.close();
+		dao.salvar(entrada);
+		produtoDao.recalcularSaldo(entrada.getProduto().getId());
 	}
 
 	/**
@@ -96,7 +91,7 @@ public class EntradaController extends HttpServlet {
 
 		response.sendRedirect(urlName);
 
-		produtoDao.recalcularSaldo(session, produtoId);
+		produtoDao.recalcularSaldo(produtoId);
 		session.close();
 		return true;
 	}
@@ -124,26 +119,19 @@ public class EntradaController extends HttpServlet {
 	}
 
 	protected void update(String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		Entrada entrada;
 		try {
-			entrada = session.get(Entrada.class, Integer.parseInt(id));
+			Entrada entrada = new Entrada();
+			entrada.setId(Integer.parseInt(id));
 			EntradaMapper.toModel(entrada, request);
-			session.beginTransaction();
-			session.update(entrada);
-			session.getTransaction().commit();
+
+			dao.atualizar(entrada);
+
+			// O saldo segue o produto que veio do formulário: é essa a referência que
+			// o mapper acabou de gravar na movimentação.
+			produtoDao.recalcularSaldo(entrada.getProduto().getId());
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		// Precisa ser depois do update: o mapper troca a referência do produto pela
-		// que veio do formulário, e é essa a que o saldo deve ser recalculado.
-		Entrada en = dao.buscarPorId(session, Integer.parseInt(id));
-		produtoDao.recalcularSaldo(session, en.getProduto().getId());
-
-		session.close();
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {

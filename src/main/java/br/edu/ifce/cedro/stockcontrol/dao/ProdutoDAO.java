@@ -15,20 +15,46 @@ import br.edu.ifce.cedro.stockcontrol.model.Saida;
  * Acesso aos dados do produto. O {@code ProdutoController} cuida da requisição
  * e da apresentação; toda a conversa com o Hibernate fica aqui.
  *
- * As operações que recebem uma {@link Session} usam a sessão aberta pelo
- * controller, para não duplicar a transação. As que não recebem abrem e fecham
- * a própria sessão, porque são chamadas fora do ciclo de gravação.
+ * As operações abrem e fecham a própria sessão, para que o controller cuide
+ * só da requisição e da apresentação.
  */
 public class ProdutoDAO {
 
 	/**
-	 * Grava um novo produto. A transação é a da sessão recebida, que já está
-	 * aberta pelo controller.
+	 * Grava um novo produto, abrindo e fechando a própria sessão para que o
+	 * controller não precise conhecer o Hibernate.
 	 */
-	public void salvar(Session session, Produto produto) {
-		session.beginTransaction();
-		session.save(produto);
-		session.getTransaction().commit();
+	public void salvar(Produto produto) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.save(produto);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
+	/**
+	 * Grava as alterações de um produto já existente. A instância chega desanexada,
+	 * com a chave preenchida, e é mesclada na sessão que o próprio DAO abre: o
+	 * controller não precisa carregar o registro antes de gravar.
+	 */
+	public void atualizar(Produto produto) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.merge(produto);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 
 	/** Todos os produtos, para montar a lista e o preenchimento dos formulários. */
@@ -71,7 +97,9 @@ public class ProdutoDAO {
 	 * As somas são feitas no banco, agrupadas por produto, em vez de trazer todas
 	 * as movimentações para a memória.
 	 */
-	public void recalcularSaldo(Session session, Integer produtoId) {
+	public void recalcularSaldo(Integer produtoId) {
+		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+
 		Produto produto = session.get(Produto.class, produtoId);
 
 		Long entradas = session
@@ -89,5 +117,7 @@ public class ProdutoDAO {
 		session.beginTransaction();
 		session.save(produto);
 		session.getTransaction().commit();
+
+		session.close();
 	}
 }

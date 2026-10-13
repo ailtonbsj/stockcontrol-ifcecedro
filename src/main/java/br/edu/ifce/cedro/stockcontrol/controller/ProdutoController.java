@@ -33,14 +33,9 @@ public class ProdutoController extends HttpServlet {
 	private final String urlName = "/produto";
 
 	protected void add(){
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		Produto produto = new Produto();
 		ProdutoMapper.toModel(produto, request);
-		dao.salvar(session, produto);
-
-		session.close();
+		dao.salvar(produto);
 	}
 
 	protected String verificaRemocao(String id) {
@@ -119,21 +114,15 @@ public class ProdutoController extends HttpServlet {
 	}
 
 	protected void update(String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		Produto produto;
 		try {
-			produto = session.get(Produto.class, Integer.parseInt(id));
+			Produto produto = new Produto();
+			produto.setId(Integer.parseInt(id));
 			ProdutoMapper.toModel(produto, request);
-			session.beginTransaction();
-			session.update(produto);
-			session.getTransaction().commit();
+
+			dao.atualizar(produto);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		session.close();
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {

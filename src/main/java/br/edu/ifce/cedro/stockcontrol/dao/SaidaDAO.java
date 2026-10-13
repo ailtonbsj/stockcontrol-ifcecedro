@@ -12,19 +12,46 @@ import br.edu.ifce.cedro.stockcontrol.model.Saida;
  * Acesso aos dados da saída de estoque. O {@code SaidaController} cuida da
  * requisição e da apresentação; toda a conversa com o Hibernate fica aqui.
  *
- * As operações recebem a {@link Session} aberta pelo controller, para não
- * duplicar a transação nem abrir uma segunda sessão no meio da requisição.
+ * As operações de escrita abrem e fecham a própria sessão, para que o
+ * controller cuide só da requisição e da apresentação.
  */
 public class SaidaDAO {
 
 	/**
-	 * Grava uma nova saída. A transação é a da sessão recebida, que já está
-	 * aberta pelo controller.
+	 * Grava uma nova saída, abrindo e fechando a própria sessão para que o
+	 * controller não precise conhecer o Hibernate.
 	 */
-	public void salvar(Session session, Saida saida) {
-		session.beginTransaction();
-		session.save(saida);
-		session.getTransaction().commit();
+	public void salvar(Saida saida) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.save(saida);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
+	/**
+	 * Grava as alterações de uma saída já existente. A instância chega desanexada,
+	 * com a chave preenchida, e é mesclada na sessão que o próprio DAO abre: o
+	 * controller não precisa carregar o registro antes de gravar.
+	 */
+	public void atualizar(Saida saida) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.merge(saida);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 
 	/**

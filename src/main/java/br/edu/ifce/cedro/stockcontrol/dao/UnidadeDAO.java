@@ -13,20 +13,46 @@ import br.edu.ifce.cedro.stockcontrol.model.Unidade;
  * Acesso aos dados da unidade de medida. O {@code UnidadeController} cuida da
  * requisição e da apresentação; toda a conversa com o Hibernate fica aqui.
  *
- * As operações que recebem uma {@link Session} usam a sessão aberta pelo
- * controller, para não duplicar a transação. As que não recebem abrem e fecham
- * a própria sessão, porque são chamadas fora do ciclo de gravação.
+ * As operações abrem e fecham a própria sessão, para que o controller cuide
+ * só da requisição e da apresentação.
  */
 public class UnidadeDAO {
 
 	/**
-	 * Grava uma nova unidade. A transação é a da sessão recebida, que já está
-	 * aberta pelo controller.
+	 * Grava uma nova unidade, abrindo e fechando a própria sessão para que o
+	 * controller não precise conhecer o Hibernate.
 	 */
-	public void salvar(Session session, Unidade unidade) {
-		session.beginTransaction();
-		session.save(unidade);
-		session.getTransaction().commit();
+	public void salvar(Unidade unidade) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.save(unidade);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
+	/**
+	 * Grava as alterações de uma unidade já existente. A instância chega
+	 * desanexada, com a chave preenchida, e é mesclada na sessão que o próprio DAO
+	 * abre: o controller não precisa carregar o registro antes de gravar.
+	 */
+	public void atualizar(Unidade unidade) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.merge(unidade);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
 	}
 
 	/** Todas as unidades, para montar a lista e o preenchimento dos formulários. */
