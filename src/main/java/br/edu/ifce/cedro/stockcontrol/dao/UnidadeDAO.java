@@ -1,11 +1,11 @@
-package br.edu.ifce.cedro.stockcontrol.daos;
+package br.edu.ifce.cedro.stockcontrol.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import br.edu.ifce.cedro.stockcontrol.models.Produto;
-import br.edu.ifce.cedro.stockcontrol.models.Unidade;
+import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.model.Unidade;
 
 /**
  * Acesso aos dados da unidade de medida. O {@code UnidadeController} cuida da

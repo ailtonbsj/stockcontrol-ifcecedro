@@ -1,13 +1,13 @@
-package br.edu.ifce.cedro.stockcontrol.daos;
+package br.edu.ifce.cedro.stockcontrol.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import br.edu.ifce.cedro.stockcontrol.models.Entrada;
-import br.edu.ifce.cedro.stockcontrol.models.Estoque;
-import br.edu.ifce.cedro.stockcontrol.models.Produto;
-import br.edu.ifce.cedro.stockcontrol.models.Saida;
+import br.edu.ifce.cedro.stockcontrol.model.Entrada;
+import br.edu.ifce.cedro.stockcontrol.model.Estoque;
+import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.model.Saida;
 
 /**
  * Acesso aos dados do produto. O {@code ProdutoController} cuida da requisição

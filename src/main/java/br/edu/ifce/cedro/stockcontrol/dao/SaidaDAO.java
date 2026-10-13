@@ -1,8 +1,8 @@
-package br.edu.ifce.cedro.stockcontrol.daos;
+package br.edu.ifce.cedro.stockcontrol.dao;
 
 import org.hibernate.Session;
 
-import br.edu.ifce.cedro.stockcontrol.models.Saida;
+import br.edu.ifce.cedro.stockcontrol.model.Saida;
 
 /**
  * Acesso aos dados da saída de estoque. O {@code SaidaController} cuida da

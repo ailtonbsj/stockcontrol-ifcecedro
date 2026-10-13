@@ -12,10 +12,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import br.edu.ifce.cedro.stockcontrol.models.Entrada;
-import br.edu.ifce.cedro.stockcontrol.models.Produto;
-import br.edu.ifce.cedro.stockcontrol.models.Saida;
-import br.edu.ifce.cedro.stockcontrol.models.Unidade;
+import br.edu.ifce.cedro.stockcontrol.model.Entrada;
+import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.model.Saida;
+import br.edu.ifce.cedro.stockcontrol.model.Unidade;
 
 /**
  * Popula o banco com dados fictícios para que a aplicação já abra com conteúdo

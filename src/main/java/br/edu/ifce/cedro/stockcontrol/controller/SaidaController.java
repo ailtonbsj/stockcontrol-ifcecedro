@@ -1,13 +1,8 @@
-package br.edu.ifce.cedro.stockcontrol.controllers;
+package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -25,10 +20,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import br.edu.ifce.cedro.stockcontrol.daos.ProdutoDAO;
-import br.edu.ifce.cedro.stockcontrol.daos.SaidaDAO;
-import br.edu.ifce.cedro.stockcontrol.models.Produto;
-import br.edu.ifce.cedro.stockcontrol.models.Saida;
+import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
+import br.edu.ifce.cedro.stockcontrol.dao.SaidaDAO;
+import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.model.Saida;
+
+import static br.edu.ifce.cedro.stockcontrol.util.Util.dateToDateTimeLocal;
+import static br.edu.ifce.cedro.stockcontrol.util.Util.dateTimeLocalToDate;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/saida")
@@ -175,24 +173,6 @@ public class SaidaController extends HttpServlet {
 
 	    session.close();
 	    return list;
-	}
-
-	public static String dateToDateTimeLocal(Date date) {
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-		return df.format(date);
-	}
-
-	public static String dateToDateTimeLocal() {
-		Date date = Calendar.getInstance().getTime();
-		return dateToDateTimeLocal(date);
-	}
-
-	public static Date dateTimeLocalToDate(String datetimeLocal) {
-		try {
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(datetimeLocal);
-		} catch (ParseException e) {
-			return new Date();
-		}
 	}
 
 	protected void listAll() throws ServletException, IOException {

@@ -1,4 +1,4 @@
-package br.edu.ifce.cedro.stockcontrol.models;
+package br.edu.ifce.cedro.stockcontrol.model;
 
 import javax.persistence.*;
 import lombok.*;

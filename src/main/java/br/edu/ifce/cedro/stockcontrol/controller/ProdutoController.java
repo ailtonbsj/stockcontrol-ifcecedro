@@ -1,13 +1,8 @@
-package br.edu.ifce.cedro.stockcontrol.controllers;
+package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -25,83 +20,79 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import br.edu.ifce.cedro.stockcontrol.daos.EntradaDAO;
-import br.edu.ifce.cedro.stockcontrol.daos.ProdutoDAO;
-import br.edu.ifce.cedro.stockcontrol.models.Entrada;
-import br.edu.ifce.cedro.stockcontrol.models.Produto;
+import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
+import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.model.Unidade;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/entrada")
-public class EntradaController extends HttpServlet {
+@WebServlet(urlPatterns = "/produto")
+public class ProdutoController extends HttpServlet {
 
 	HttpServletRequest request;
 	HttpServletResponse response;
 
-	private final EntradaDAO dao = new EntradaDAO();
-	private final ProdutoDAO produtoDao = new ProdutoDAO();
+	private final ProdutoDAO dao = new ProdutoDAO();
 
 	protected String getViewName() {
-		return "Entrada";
+		return "Produto";
 	}
 
 	protected String getViewNamePlural() {
-		return "Entradas";
+		return "Produtos";
 	}
 
 	protected String getUrlName() {
-		return "/entrada";
+		return "/produto";
 	}
 
 	protected String getModel() {
-		return Entrada.class.getCanonicalName();
+		return Produto.class.getCanonicalName();
 	}
 
-	protected void setFieldsForm(Object entrada) {
-		request.setAttribute("id", ((Entrada) entrada).getId().toString());
-		request.setAttribute("produtoId", ((Entrada) entrada).getProduto().getId());
-		request.setAttribute("fornecedor", ((Entrada) entrada).getFornecedor());
-		request.setAttribute("quantidade", ((Entrada) entrada).getQuantidade().toString());
-		request.setAttribute("validade", dateToDateTimeLocal(((Entrada) entrada).getValidade()));
-		request.setAttribute("data", dateToDateTimeLocal(((Entrada) entrada).getData()));
-		request.setAttribute("observacao", ((Entrada) entrada).getObservacao());
+	protected void setFieldsForm(Object produto) {
+		request.setAttribute("id", ((Produto) produto).getId().toString());
+		request.setAttribute("nome", ((Produto) produto).getNome());
+		request.setAttribute("quantidade", ((Produto) produto).getQuantidade().toString());
+		request.setAttribute("minimo", ((Produto) produto).getMinimo().toString());
+		request.setAttribute("unidadeId", ((Produto) produto).getUnidade().getId().toString());
 	}
 
 	protected void setFields(Object item) {
-		Produto p = new Produto();
-		p.setId(Integer.parseInt(request.getParameter("produto")));
-		((Entrada) item).setProduto(p);
-		((Entrada) item).setFornecedor(request.getParameter("fornecedor"));
-		((Entrada) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
-		((Entrada) item).setValidade(dateTimeLocalToDate(request.getParameter("validade")));
-		((Entrada) item).setData(dateTimeLocalToDate(request.getParameter("data")));
-		((Entrada) item).setObservacao(request.getParameter("observacao"));
+		((Produto) item).setNome(request.getParameter("nome"));
+		((Produto) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
+		((Produto) item).setMinimo(Integer.valueOf(request.getParameter("minimo")));
+		Unidade unidade = new Unidade();
+		unidade.setId(Integer.valueOf(request.getParameter("unidade")));
+		((Produto) item).setUnidade(unidade);
 	}
 
 	protected void add(Session session) {
-		Entrada entrada = new Entrada();
-		setFields((Object) entrada);
-		dao.salvar(session, entrada);
-		produtoDao.recalcularSaldo(session, entrada.getProduto().getId());
+		Produto produto = new Produto();
+		setFields((Object) produto);
+		dao.salvar(session, produto);
 	}
 
-	/**
-	 * Entrada não tem restrição de exclusão: é ela que origina o saldo do produto,
-	 * então apagar uma não deixa referência órfã.
-	 */
 	protected String verificaRemocao(String id) {
+		long movimentacoes = dao.contarMovimentacoes(Integer.valueOf(id));
+
+		if (movimentacoes > 0) {
+			return "Este produto possui " + movimentacoes
+					+ " movimentação(ões) de estoque e não pode ser excluído.";
+		}
+
 		return null;
 	}
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
+		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
 		try {
-			Object entrada = session.get(Class.forName(getModel()), Integer.parseInt(id));
-			setFieldsForm(entrada);
+			Object produto = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			setFieldsForm(produto);
 			request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -120,13 +111,10 @@ public class EntradaController extends HttpServlet {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
-		// Lido antes da exclusão: é o produto cujo saldo será recalculado.
-		int produtoId = dao.buscarPorId(session, Integer.parseInt(id)).getProduto().getId();
-
 		try {
-			Object entrada = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object produto = session.get(Class.forName(getModel()), Integer.parseInt(id));
 			session.beginTransaction();
-			session.remove(entrada);
+			session.remove(produto);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -135,8 +123,6 @@ public class EntradaController extends HttpServlet {
 		}
 
 		response.sendRedirect(getUrlName());
-
-		produtoDao.recalcularSaldo(session, produtoId);
 		session.close();
 		return true;
 	}
@@ -179,24 +165,6 @@ public class EntradaController extends HttpServlet {
 	    return list;
 	}
 
-	public static String dateToDateTimeLocal(Date date) {
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-		return df.format(date);
-	}
-
-	public static String dateToDateTimeLocal() {
-		Date date = Calendar.getInstance().getTime();
-		return dateToDateTimeLocal(date);
-	}
-
-	public static Date dateTimeLocalToDate(String datetimeLocal) {
-		try {
-			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(datetimeLocal);
-		} catch (ParseException e) {
-			return new Date();
-		}
-	}
-
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
@@ -205,29 +173,24 @@ public class EntradaController extends HttpServlet {
 	}
 
 	protected void update(Session session, String id) {
-		Object entrada;
+		Object produto;
 		try {
-			entrada = session.get(Class.forName(getModel()), Integer.parseInt(id));
-			setFields(entrada);
+			produto = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			setFields(produto);
 			session.beginTransaction();
-			session.update(entrada);
+			session.update(produto);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-
-		// Precisa ser depois do update: setFields troca a referência do produto pela
-		// que veio do formulário, e é essa a que o saldo deve ser recalculado.
-		Entrada en = dao.buscarPorId(session, Integer.parseInt(id));
-		produtoDao.recalcularSaldo(session, en.getProduto().getId());
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
-		request.setAttribute("data", dateToDateTimeLocal());
+		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
+		request.setAttribute("quantidade", "0");
 		request.getRequestDispatcher("/WEB-INF/views"+ getUrlName() +"-form.jsp").forward(request, response);
 	}
 
