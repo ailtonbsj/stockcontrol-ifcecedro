@@ -22,11 +22,10 @@ import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.SaidaDAO;
-import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
+import mapper.SaidaMapper;
 
 import static br.edu.ifce.cedro.stockcontrol.util.Util.dateToDateTimeLocal;
-import static br.edu.ifce.cedro.stockcontrol.util.Util.dateTimeLocalToDate;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/saida")
@@ -40,30 +39,10 @@ public class SaidaController extends HttpServlet {
 
 	private final String viewNamePlural = "Saidas";
 	private final String urlName = "/saida";
-	private final String model = Saida.class.getCanonicalName();
-
-	protected void setFieldsForm(Saida saida) {
-		request.setAttribute("id", saida.getId().toString());
-		request.setAttribute("produtoId", saida.getProduto().getId());
-		request.setAttribute("retirante", saida.getRetirante());
-		request.setAttribute("quantidade", saida.getQuantidade().toString());
-		request.setAttribute("data", dateToDateTimeLocal(saida.getData()));
-		request.setAttribute("observacao", saida.getObservacao());
-	}
-
-	protected void setFields(Saida item) {
-		Produto p = new Produto();
-		p.setId(Integer.parseInt(request.getParameter("produto")));
-		item.setProduto(p);
-		item.setRetirante(request.getParameter("retirante"));
-		item.setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
-		item.setData(dateTimeLocalToDate(request.getParameter("data")));
-		item.setObservacao(request.getParameter("observacao"));
-	}
 
 	protected void add(Session session) {
 		Saida saida = new Saida();
-		setFields(saida);
+		SaidaMapper.toModel(saida, request);
 		dao.salvar(session, saida);
 		produtoDao.recalcularSaldo(session, saida.getProduto().getId());
 	}
@@ -78,14 +57,14 @@ public class SaidaController extends HttpServlet {
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
+		request.setAttribute("produtos", ProdutoController.getList());
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
 		try {
 			Saida saida = session.get(Saida.class, Integer.parseInt(id));
-			setFieldsForm(saida);
+			SaidaMapper.toRequest(saida, request);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -108,13 +87,11 @@ public class SaidaController extends HttpServlet {
 		int produtoId = dao.buscarPorId(session, Integer.parseInt(id)).getProduto().getId();
 
 		try {
-			Object saida = session.get(Class.forName(model), Integer.parseInt(id));
+			Object saida = session.get(Saida.class, Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(saida);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -140,24 +117,18 @@ public class SaidaController extends HttpServlet {
 		}
 	}
 
-	protected static List<Object> getList(String modelName) throws ServletException, IOException {
-		List<Object> list = new ArrayList<Object>();
+	protected static List<Saida> getList() throws ServletException, IOException {
+		List<Saida> list = new ArrayList<>();
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
-		try {
-			CriteriaBuilder cb =  session.getCriteriaBuilder();
-			@SuppressWarnings("unchecked")
-			CriteriaQuery<Object> cq = (CriteriaQuery<Object>) cb.createQuery(Class.forName(modelName));
-			@SuppressWarnings("unchecked")
-			Root<Object> rootEntry = (Root<Object>) cq.from(Class.forName(modelName));
-			CriteriaQuery<Object> all = cq.select(rootEntry);
-		    TypedQuery<Object> allQuery = session.createQuery(all);
-		    list = allQuery.getResultList();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		CriteriaBuilder cb =  session.getCriteriaBuilder();
+		CriteriaQuery<Saida> cq = (CriteriaQuery<Saida>) cb.createQuery(Saida.class);
+		Root<Saida> rootEntry = (Root<Saida>) cq.from(Saida.class);
+		CriteriaQuery<Saida> all = cq.select(rootEntry);
+	    TypedQuery<Saida> allQuery = session.createQuery(all);
+	    list = allQuery.getResultList();
 
 	    session.close();
 	    return list;
@@ -166,7 +137,7 @@ public class SaidaController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(viewNamePlural, getList(model));
+		request.setAttribute(viewNamePlural, getList());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
@@ -174,7 +145,7 @@ public class SaidaController extends HttpServlet {
 		Saida saida;
 		try {
 			saida = session.get(Saida.class, Integer.parseInt(id));
-			setFields(saida);
+			SaidaMapper.toModel(saida, request);
 			session.beginTransaction();
 			session.update(saida);
 			session.getTransaction().commit();
@@ -182,7 +153,7 @@ public class SaidaController extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		// Precisa ser depois do update: setFields troca a referência do produto pela
+		// Precisa ser depois do update: o mapper troca a referência do produto pela
 		// que veio do formulário, e é essa a que o saldo deve ser recalculado.
 		Saida sd = dao.buscarPorId(session, Integer.parseInt(id));
 		produtoDao.recalcularSaldo(session, sd.getProduto().getId());
@@ -190,7 +161,7 @@ public class SaidaController extends HttpServlet {
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
+		request.setAttribute("produtos", ProdutoController.getList());
 		request.setAttribute("data", dateToDateTimeLocal());
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}

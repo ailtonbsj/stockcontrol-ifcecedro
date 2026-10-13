@@ -115,9 +115,7 @@ public class UnidadeController extends HttpServlet {
 		Session session = sf.openSession();
 		
 		CriteriaBuilder cb =  session.getCriteriaBuilder();
-		@SuppressWarnings("unchecked")
 		CriteriaQuery<Unidade> cq = (CriteriaQuery<Unidade>) cb.createQuery(Unidade.class);
-		@SuppressWarnings("unchecked")
 		Root<Unidade> rootEntry = (Root<Unidade>) cq.from(Unidade.class);
 		CriteriaQuery<Unidade> all = cq.select(rootEntry);
 		TypedQuery<Unidade> allQuery = session.createQuery(all);

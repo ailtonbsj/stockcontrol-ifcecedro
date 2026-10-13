@@ -35,7 +35,6 @@ public class ProdutoController extends HttpServlet {
 
 	private final String viewNamePlural = "Produtos";
 	private final String urlName = "/produto";
-	private final String model = Produto.class.getCanonicalName();
 
 	protected void add(Session session) {
 		Produto produto = new Produto();
@@ -83,13 +82,11 @@ public class ProdutoController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object produto = session.get(Class.forName(model), Integer.parseInt(id));
+			Object produto = session.get(Produto.class, Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(produto);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -113,24 +110,18 @@ public class ProdutoController extends HttpServlet {
 		}
 	}
 
-	protected static List<Object> getList(String modelName) throws ServletException, IOException {
-		List<Object> list = new ArrayList<Object>();
+	protected static List<Produto> getList() throws ServletException, IOException {
+		List<Produto> list = new ArrayList<>();
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
-		try {
-			CriteriaBuilder cb =  session.getCriteriaBuilder();
-			@SuppressWarnings("unchecked")
-			CriteriaQuery<Object> cq = (CriteriaQuery<Object>) cb.createQuery(Class.forName(modelName));
-			@SuppressWarnings("unchecked")
-			Root<Object> rootEntry = (Root<Object>) cq.from(Class.forName(modelName));
-			CriteriaQuery<Object> all = cq.select(rootEntry);
-		    TypedQuery<Object> allQuery = session.createQuery(all);
-		    list = allQuery.getResultList();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		CriteriaBuilder cb =  session.getCriteriaBuilder();
+		CriteriaQuery<Produto> cq = (CriteriaQuery<Produto>) cb.createQuery(Produto.class);
+		Root<Produto> rootEntry = (Root<Produto>) cq.from(Produto.class);
+		CriteriaQuery<Produto> all = cq.select(rootEntry);
+	    TypedQuery<Produto> allQuery = session.createQuery(all);
+	    list = allQuery.getResultList();
 
 	    session.close();
 	    return list;
@@ -139,7 +130,7 @@ public class ProdutoController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(viewNamePlural, getList(model));
+		request.setAttribute(viewNamePlural, getList());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
