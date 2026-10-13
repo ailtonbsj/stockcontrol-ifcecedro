@@ -7,13 +7,15 @@ import javax.servlet.annotation.WebServlet;
 
 import org.hibernate.Session;
 
-import br.edu.ifce.cedro.stockcontrol.models.Estoque;
+import br.edu.ifce.cedro.stockcontrol.daos.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.models.Produto;
 import br.edu.ifce.cedro.stockcontrol.models.Unidade;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/produto")
 public class ProdutoController extends Controller {
+
+	private final ProdutoDAO dao = new ProdutoDAO();
 
 	@Override
 	protected String getViewName() {
@@ -39,9 +41,7 @@ public class ProdutoController extends Controller {
 	protected void add(Session session) {
 		Produto produto = new Produto();
 		setFields((Object) produto);
-		session.beginTransaction();
-		session.save(produto);
-		session.getTransaction().commit();
+		dao.salvar(session, produto);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class ProdutoController extends Controller {
 
 	@Override
 	protected String verificaRemocao(String id) {
-		long movimentacoes = contaDependencias(Estoque.class.getCanonicalName(), "produto", id);
+		long movimentacoes = dao.contarMovimentacoes(Integer.valueOf(id));
 
 		if (movimentacoes > 0) {
 			return "Este produto possui " + movimentacoes
