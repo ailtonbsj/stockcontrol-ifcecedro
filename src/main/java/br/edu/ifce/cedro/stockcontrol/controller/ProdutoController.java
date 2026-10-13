@@ -32,10 +32,15 @@ public class ProdutoController extends HttpServlet {
 	private final String viewNamePlural = "Produtos";
 	private final String urlName = "/produto";
 
-	protected void add(Session session) {
+	protected void add(){
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
 		Produto produto = new Produto();
 		ProdutoMapper.toModel(produto, request);
 		dao.salvar(session, produto);
+
+		session.close();
 	}
 
 	protected String verificaRemocao(String id) {
@@ -113,7 +118,10 @@ public class ProdutoController extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
-	protected void update(Session session, String id) {
+	protected void update(String id) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
 		Produto produto;
 		try {
 			produto = session.get(Produto.class, Integer.parseInt(id));
@@ -124,6 +132,8 @@ public class ProdutoController extends HttpServlet {
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
+
+		session.close();
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {
@@ -163,13 +173,10 @@ public class ProdutoController extends HttpServlet {
 
 		String id = req.getParameter("id");
 
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
 
-		if(id.equals("")) add(session);
-		else update(session, id);
 
-		session.close();
+		if(id.equals("")) add();
+		else update(id);
 
 		resp.sendRedirect(urlName);
 	}

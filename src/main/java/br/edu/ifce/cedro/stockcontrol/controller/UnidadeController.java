@@ -30,10 +30,15 @@ public class UnidadeController extends HttpServlet {
 	private final String viewNamePlural = "Unidades";
 	private final String urlName = "/unidade";
 	
-	protected void add(Session session) {
+	protected void add() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
 		Unidade unidade = new Unidade();
 		UnidadeMapper.toModel(unidade, request);
 		dao.salvar(session, unidade);
+
+		session.close();
 	}
 
 	protected String verificaRemocao(String id) {
@@ -109,7 +114,10 @@ public class UnidadeController extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 	
-	protected void update(Session session, String id) {
+	protected void update(String id) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
 		Unidade unidade;
 		try {
 			unidade = session.get(Unidade.class, Integer.parseInt(id));
@@ -120,6 +128,8 @@ public class UnidadeController extends HttpServlet {
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
+
+		session.close();
 	}
 	
 	protected void showEmptyForm() throws ServletException, IOException {
@@ -157,13 +167,8 @@ public class UnidadeController extends HttpServlet {
 		
 		String id = req.getParameter("id");
 		
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-				
-		if(id.equals("")) add(session);
-		else update(session, id);
-		
-		session.close();
+		if(id.equals("")) add();
+		else update(id);
 		
 		resp.sendRedirect(urlName);
 	}

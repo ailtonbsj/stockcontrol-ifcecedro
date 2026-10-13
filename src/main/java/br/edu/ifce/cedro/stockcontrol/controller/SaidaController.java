@@ -34,11 +34,16 @@ public class SaidaController extends HttpServlet {
 	private final String viewNamePlural = "Saidas";
 	private final String urlName = "/saida";
 
-	protected void add(Session session) {
+	protected void add() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
 		Saida saida = new Saida();
 		SaidaMapper.toModel(saida, request);
 		dao.salvar(session, saida);
 		produtoDao.recalcularSaldo(session, saida.getProduto().getId());
+
+		session.close();
 	}
 
 	/**
@@ -118,7 +123,10 @@ public class SaidaController extends HttpServlet {
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
-	protected void update(Session session, String id) {
+	protected void update(String id) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
 		Saida saida;
 		try {
 			saida = session.get(Saida.class, Integer.parseInt(id));
@@ -134,6 +142,8 @@ public class SaidaController extends HttpServlet {
 		// que veio do formulário, e é essa a que o saldo deve ser recalculado.
 		Saida sd = dao.buscarPorId(session, Integer.parseInt(id));
 		produtoDao.recalcularSaldo(session, sd.getProduto().getId());
+
+		session.close();
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {
@@ -173,13 +183,8 @@ public class SaidaController extends HttpServlet {
 
 		String id = req.getParameter("id");
 
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		if(id.equals("")) add(session);
-		else update(session, id);
-
-		session.close();
+		if(id.equals("")) add();
+		else update(id);
 
 		resp.sendRedirect(urlName);
 	}
