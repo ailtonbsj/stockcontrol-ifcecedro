@@ -22,6 +22,7 @@ import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
+import mapper.UnidadeMapper;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/unidade")
@@ -34,22 +35,10 @@ public class UnidadeController extends HttpServlet {
 
 	private final String viewNamePlural = "Unidades";
 	private final String urlName = "/unidade";
-	private final String model = Unidade.class.getCanonicalName();
-
-	protected void setFieldsForm(Unidade unidade) {
-		request.setAttribute("id", unidade.getId().toString());
-		request.setAttribute("simbolo", unidade.getSimbolo());
-		request.setAttribute("descricao", unidade.getDescricao());
-	}
-	
-	protected void setFields(Unidade item) {
-		item.setSimbolo(request.getParameter("simbolo"));
-		item.setDescricao(request.getParameter("descricao"));
-	}
 	
 	protected void add(Session session) {
 		Unidade unidade = new Unidade();
-		setFields(unidade);
+		UnidadeMapper.toModel(unidade, request);
 		dao.salvar(session, unidade);
 	}
 
@@ -71,7 +60,7 @@ public class UnidadeController extends HttpServlet {
 		
 		try {
 			Unidade unidade = session.get(Unidade.class, Integer.parseInt(id));
-			setFieldsForm(unidade);
+			UnidadeMapper.toRequest(unidade, request);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -91,13 +80,11 @@ public class UnidadeController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object unidade = session.get(Class.forName(model), Integer.parseInt(id));
+			Object unidade = session.get(Unidade.class, Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(unidade);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
@@ -121,24 +108,20 @@ public class UnidadeController extends HttpServlet {
 		}
 	}
 	
-	protected static List<Object> getList(String modelName) throws ServletException, IOException {
-		List<Object> list = new ArrayList<Object>();
+	protected static List<Unidade> getList() throws ServletException, IOException {
+		List<Unidade> list = new ArrayList<>();
 		
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 		
-		try {
-			CriteriaBuilder cb =  session.getCriteriaBuilder();
-			@SuppressWarnings("unchecked")
-			CriteriaQuery<Object> cq = (CriteriaQuery<Object>) cb.createQuery(Class.forName(modelName));
-			@SuppressWarnings("unchecked")
-			Root<Object> rootEntry = (Root<Object>) cq.from(Class.forName(modelName));
-			CriteriaQuery<Object> all = cq.select(rootEntry);
-		    TypedQuery<Object> allQuery = session.createQuery(all);
-		    list = allQuery.getResultList();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		CriteriaBuilder cb =  session.getCriteriaBuilder();
+		@SuppressWarnings("unchecked")
+		CriteriaQuery<Unidade> cq = (CriteriaQuery<Unidade>) cb.createQuery(Unidade.class);
+		@SuppressWarnings("unchecked")
+		Root<Unidade> rootEntry = (Root<Unidade>) cq.from(Unidade.class);
+		CriteriaQuery<Unidade> all = cq.select(rootEntry);
+		TypedQuery<Unidade> allQuery = session.createQuery(all);
+		list = allQuery.getResultList();
 		
 	    session.close();
 	    return list;
@@ -147,7 +130,7 @@ public class UnidadeController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 		
-		request.setAttribute(viewNamePlural, getList(model));
+		request.setAttribute(viewNamePlural, getList());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 	
@@ -155,7 +138,7 @@ public class UnidadeController extends HttpServlet {
 		Unidade unidade;
 		try {
 			unidade = session.get(Unidade.class, Integer.parseInt(id));
-			setFields(unidade);
+			UnidadeMapper.toModel(unidade, request);
 			session.beginTransaction();
 			session.update(unidade);
 			session.getTransaction().commit();

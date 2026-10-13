@@ -42,30 +42,30 @@ public class EntradaController extends HttpServlet {
 	private final String urlName = "/entrada";
 	private final String model = Entrada.class.getCanonicalName();
 
-	protected void setFieldsForm(Object entrada) {
-		request.setAttribute("id", ((Entrada) entrada).getId().toString());
-		request.setAttribute("produtoId", ((Entrada) entrada).getProduto().getId());
-		request.setAttribute("fornecedor", ((Entrada) entrada).getFornecedor());
-		request.setAttribute("quantidade", ((Entrada) entrada).getQuantidade().toString());
-		request.setAttribute("validade", dateToDateTimeLocal(((Entrada) entrada).getValidade()));
-		request.setAttribute("data", dateToDateTimeLocal(((Entrada) entrada).getData()));
-		request.setAttribute("observacao", ((Entrada) entrada).getObservacao());
+	protected void setFieldsForm(Entrada entrada) {
+		request.setAttribute("id", entrada.getId().toString());
+		request.setAttribute("produtoId", entrada.getProduto().getId());
+		request.setAttribute("fornecedor", entrada.getFornecedor());
+		request.setAttribute("quantidade", entrada.getQuantidade().toString());
+		request.setAttribute("validade", dateToDateTimeLocal(entrada.getValidade()));
+		request.setAttribute("data", dateToDateTimeLocal(entrada.getData()));
+		request.setAttribute("observacao", entrada.getObservacao());
 	}
 
-	protected void setFields(Object item) {
+	protected void setFields(Entrada item) {
 		Produto p = new Produto();
 		p.setId(Integer.parseInt(request.getParameter("produto")));
-		((Entrada) item).setProduto(p);
-		((Entrada) item).setFornecedor(request.getParameter("fornecedor"));
-		((Entrada) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
-		((Entrada) item).setValidade(dateTimeLocalToDate(request.getParameter("validade")));
-		((Entrada) item).setData(dateTimeLocalToDate(request.getParameter("data")));
-		((Entrada) item).setObservacao(request.getParameter("observacao"));
+		item.setProduto(p);
+		item.setFornecedor(request.getParameter("fornecedor"));
+		item.setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
+		item.setValidade(dateTimeLocalToDate(request.getParameter("validade")));
+		item.setData(dateTimeLocalToDate(request.getParameter("data")));
+		item.setObservacao(request.getParameter("observacao"));
 	}
 
 	protected void add(Session session) {
 		Entrada entrada = new Entrada();
-		setFields((Object) entrada);
+		setFields(entrada);
 		dao.salvar(session, entrada);
 		produtoDao.recalcularSaldo(session, entrada.getProduto().getId());
 	}
@@ -86,10 +86,10 @@ public class EntradaController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object entrada = session.get(Class.forName(model), Integer.parseInt(id));
+			Entrada entrada = session.get(Entrada.class, Integer.parseInt(id));
 			setFieldsForm(entrada);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
-		} catch (NumberFormatException | ClassNotFoundException e) {
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 
@@ -173,16 +173,14 @@ public class EntradaController extends HttpServlet {
 	}
 
 	protected void update(Session session, String id) {
-		Object entrada;
+		Entrada entrada;
 		try {
-			entrada = session.get(Class.forName(model), Integer.parseInt(id));
+			entrada = session.get(Entrada.class, Integer.parseInt(id));
 			setFields(entrada);
 			session.beginTransaction();
 			session.update(entrada);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 

@@ -42,28 +42,28 @@ public class SaidaController extends HttpServlet {
 	private final String urlName = "/saida";
 	private final String model = Saida.class.getCanonicalName();
 
-	protected void setFieldsForm(Object saida) {
-		request.setAttribute("id", ((Saida) saida).getId().toString());
-		request.setAttribute("produtoId", ((Saida) saida).getProduto().getId());
-		request.setAttribute("retirante", ((Saida) saida).getRetirante());
-		request.setAttribute("quantidade", ((Saida) saida).getQuantidade().toString());
-		request.setAttribute("data", dateToDateTimeLocal(((Saida) saida).getData()));
-		request.setAttribute("observacao", ((Saida) saida).getObservacao());
+	protected void setFieldsForm(Saida saida) {
+		request.setAttribute("id", saida.getId().toString());
+		request.setAttribute("produtoId", saida.getProduto().getId());
+		request.setAttribute("retirante", saida.getRetirante());
+		request.setAttribute("quantidade", saida.getQuantidade().toString());
+		request.setAttribute("data", dateToDateTimeLocal(saida.getData()));
+		request.setAttribute("observacao", saida.getObservacao());
 	}
 
-	protected void setFields(Object item) {
+	protected void setFields(Saida item) {
 		Produto p = new Produto();
 		p.setId(Integer.parseInt(request.getParameter("produto")));
-		((Saida) item).setProduto(p);
-		((Saida) item).setRetirante(request.getParameter("retirante"));
-		((Saida) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
-		((Saida) item).setData(dateTimeLocalToDate(request.getParameter("data")));
-		((Saida) item).setObservacao(request.getParameter("observacao"));
+		item.setProduto(p);
+		item.setRetirante(request.getParameter("retirante"));
+		item.setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
+		item.setData(dateTimeLocalToDate(request.getParameter("data")));
+		item.setObservacao(request.getParameter("observacao"));
 	}
 
 	protected void add(Session session) {
 		Saida saida = new Saida();
-		setFields((Object) saida);
+		setFields(saida);
 		dao.salvar(session, saida);
 		produtoDao.recalcularSaldo(session, saida.getProduto().getId());
 	}
@@ -84,10 +84,10 @@ public class SaidaController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object saida = session.get(Class.forName(model), Integer.parseInt(id));
+			Saida saida = session.get(Saida.class, Integer.parseInt(id));
 			setFieldsForm(saida);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
-		} catch (NumberFormatException | ClassNotFoundException e) {
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 
@@ -171,16 +171,14 @@ public class SaidaController extends HttpServlet {
 	}
 
 	protected void update(Session session, String id) {
-		Object saida;
+		Saida saida;
 		try {
-			saida = session.get(Class.forName(model), Integer.parseInt(id));
+			saida = session.get(Saida.class, Integer.parseInt(id));
 			setFields(saida);
 			session.beginTransaction();
 			session.update(saida);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 

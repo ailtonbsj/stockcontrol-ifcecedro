@@ -22,7 +22,7 @@ import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
-import br.edu.ifce.cedro.stockcontrol.model.Unidade;
+import mapper.ProdutoMapper;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/produto")
@@ -37,26 +37,9 @@ public class ProdutoController extends HttpServlet {
 	private final String urlName = "/produto";
 	private final String model = Produto.class.getCanonicalName();
 
-	protected void setFieldsForm(Object produto) {
-		request.setAttribute("id", ((Produto) produto).getId().toString());
-		request.setAttribute("nome", ((Produto) produto).getNome());
-		request.setAttribute("quantidade", ((Produto) produto).getQuantidade().toString());
-		request.setAttribute("minimo", ((Produto) produto).getMinimo().toString());
-		request.setAttribute("unidadeId", ((Produto) produto).getUnidade().getId().toString());
-	}
-
-	protected void setFields(Object item) {
-		((Produto) item).setNome(request.getParameter("nome"));
-		((Produto) item).setQuantidade(Integer.valueOf(request.getParameter("quantidade")));
-		((Produto) item).setMinimo(Integer.valueOf(request.getParameter("minimo")));
-		Unidade unidade = new Unidade();
-		unidade.setId(Integer.valueOf(request.getParameter("unidade")));
-		((Produto) item).setUnidade(unidade);
-	}
-
 	protected void add(Session session) {
 		Produto produto = new Produto();
-		setFields((Object) produto);
+		ProdutoMapper.toModel(produto, request);
 		dao.salvar(session, produto);
 	}
 
@@ -73,16 +56,16 @@ public class ProdutoController extends HttpServlet {
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
+		request.setAttribute("unidades", UnidadeController.getList());
 
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
 		try {
-			Object produto = session.get(Class.forName(model), Integer.parseInt(id));
-			setFieldsForm(produto);
+			Produto produto = session.get(Produto.class, Integer.parseInt(id));
+			ProdutoMapper.toRequest(produto, request);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
-		} catch (NumberFormatException | ClassNotFoundException e) {
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 
@@ -161,23 +144,21 @@ public class ProdutoController extends HttpServlet {
 	}
 
 	protected void update(Session session, String id) {
-		Object produto;
+		Produto produto;
 		try {
-			produto = session.get(Class.forName(model), Integer.parseInt(id));
-			setFields(produto);
+			produto = session.get(Produto.class, Integer.parseInt(id));
+			ProdutoMapper.toModel(produto, request);
 			session.beginTransaction();
 			session.update(produto);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
+		request.setAttribute("unidades", UnidadeController.getList());
 		request.setAttribute("quantidade", "0");
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
