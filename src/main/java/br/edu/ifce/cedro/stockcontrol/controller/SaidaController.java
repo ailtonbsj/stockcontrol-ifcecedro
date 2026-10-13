@@ -38,21 +38,9 @@ public class SaidaController extends HttpServlet {
 	private final SaidaDAO dao = new SaidaDAO();
 	private final ProdutoDAO produtoDao = new ProdutoDAO();
 
-	protected String getViewName() {
-		return "Saida";
-	}
-
-	protected String getViewNamePlural() {
-		return "Saidas";
-	}
-
-	protected String getUrlName() {
-		return "/saida";
-	}
-
-	protected String getModel() {
-		return Saida.class.getCanonicalName();
-	}
+	private final String viewNamePlural = "Saidas";
+	private final String urlName = "/saida";
+	private final String model = Saida.class.getCanonicalName();
 
 	protected void setFieldsForm(Object saida) {
 		request.setAttribute("id", ((Saida) saida).getId().toString());
@@ -96,9 +84,9 @@ public class SaidaController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object saida = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object saida = session.get(Class.forName(model), Integer.parseInt(id));
 			setFieldsForm(saida);
-			request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-form.jsp").forward(request, response);
+			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +97,7 @@ public class SaidaController extends HttpServlet {
 	protected boolean remove(String id) throws IOException {
 		String bloqueio = verificaRemocao(id);
 		if (bloqueio != null) {
-			response.sendRedirect(getUrlName() + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
+			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
 		}
 
@@ -120,7 +108,7 @@ public class SaidaController extends HttpServlet {
 		int produtoId = dao.buscarPorId(session, Integer.parseInt(id)).getProduto().getId();
 
 		try {
-			Object saida = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object saida = session.get(Class.forName(model), Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(saida);
 			session.getTransaction().commit();
@@ -130,7 +118,7 @@ public class SaidaController extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		response.sendRedirect(getUrlName());
+		response.sendRedirect(urlName);
 
 		produtoDao.recalcularSaldo(session, produtoId);
 		session.close();
@@ -178,14 +166,14 @@ public class SaidaController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(getViewNamePlural(), getList(getModel()));
-		request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
+		request.setAttribute(viewNamePlural, getList(model));
+		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
 	protected void update(Session session, String id) {
 		Object saida;
 		try {
-			saida = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			saida = session.get(Class.forName(model), Integer.parseInt(id));
 			setFields(saida);
 			session.beginTransaction();
 			session.update(saida);
@@ -206,7 +194,7 @@ public class SaidaController extends HttpServlet {
 		request.setAttribute("operacao", "Adicionar");
 		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
 		request.setAttribute("data", dateToDateTimeLocal());
-		request.getRequestDispatcher("/WEB-INF/views"+ getUrlName() +"-form.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
 
 	@Override
@@ -219,7 +207,7 @@ public class SaidaController extends HttpServlet {
 		this.request = req;
 		this.response = resp;
 
-		req.setAttribute("viewName", getViewNamePlural());
+		req.setAttribute("viewName", viewNamePlural);
 
 		String add = req.getParameter("add");
 		String up = req.getParameter("up");
@@ -247,7 +235,7 @@ public class SaidaController extends HttpServlet {
 
 		session.close();
 
-		resp.sendRedirect(getUrlName());
+		resp.sendRedirect(urlName);
 	}
 
 }

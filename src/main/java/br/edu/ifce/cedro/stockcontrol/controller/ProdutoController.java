@@ -33,21 +33,9 @@ public class ProdutoController extends HttpServlet {
 
 	private final ProdutoDAO dao = new ProdutoDAO();
 
-	protected String getViewName() {
-		return "Produto";
-	}
-
-	protected String getViewNamePlural() {
-		return "Produtos";
-	}
-
-	protected String getUrlName() {
-		return "/produto";
-	}
-
-	protected String getModel() {
-		return Produto.class.getCanonicalName();
-	}
+	private final String viewNamePlural = "Produtos";
+	private final String urlName = "/produto";
+	private final String model = Produto.class.getCanonicalName();
 
 	protected void setFieldsForm(Object produto) {
 		request.setAttribute("id", ((Produto) produto).getId().toString());
@@ -91,9 +79,9 @@ public class ProdutoController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object produto = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object produto = session.get(Class.forName(model), Integer.parseInt(id));
 			setFieldsForm(produto);
-			request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-form.jsp").forward(request, response);
+			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -104,7 +92,7 @@ public class ProdutoController extends HttpServlet {
 	protected boolean remove(String id) throws IOException {
 		String bloqueio = verificaRemocao(id);
 		if (bloqueio != null) {
-			response.sendRedirect(getUrlName() + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
+			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
 		}
 
@@ -112,7 +100,7 @@ public class ProdutoController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object produto = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object produto = session.get(Class.forName(model), Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(produto);
 			session.getTransaction().commit();
@@ -122,7 +110,7 @@ public class ProdutoController extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		response.sendRedirect(getUrlName());
+		response.sendRedirect(urlName);
 		session.close();
 		return true;
 	}
@@ -168,14 +156,14 @@ public class ProdutoController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(getViewNamePlural(), getList(getModel()));
-		request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
+		request.setAttribute(viewNamePlural, getList(model));
+		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
 	protected void update(Session session, String id) {
 		Object produto;
 		try {
-			produto = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			produto = session.get(Class.forName(model), Integer.parseInt(id));
 			setFields(produto);
 			session.beginTransaction();
 			session.update(produto);
@@ -191,7 +179,7 @@ public class ProdutoController extends HttpServlet {
 		request.setAttribute("operacao", "Adicionar");
 		request.setAttribute("unidades", UnidadeController.getList(Unidade.class.getCanonicalName()));
 		request.setAttribute("quantidade", "0");
-		request.getRequestDispatcher("/WEB-INF/views"+ getUrlName() +"-form.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
 
 	@Override
@@ -204,7 +192,7 @@ public class ProdutoController extends HttpServlet {
 		this.request = req;
 		this.response = resp;
 
-		req.setAttribute("viewName", getViewNamePlural());
+		req.setAttribute("viewName", viewNamePlural);
 
 		String add = req.getParameter("add");
 		String up = req.getParameter("up");
@@ -232,7 +220,7 @@ public class ProdutoController extends HttpServlet {
 
 		session.close();
 
-		resp.sendRedirect(getUrlName());
+		resp.sendRedirect(urlName);
 	}
 
 }

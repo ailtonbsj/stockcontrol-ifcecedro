@@ -38,21 +38,9 @@ public class EntradaController extends HttpServlet {
 	private final EntradaDAO dao = new EntradaDAO();
 	private final ProdutoDAO produtoDao = new ProdutoDAO();
 
-	protected String getViewName() {
-		return "Entrada";
-	}
-
-	protected String getViewNamePlural() {
-		return "Entradas";
-	}
-
-	protected String getUrlName() {
-		return "/entrada";
-	}
-
-	protected String getModel() {
-		return Entrada.class.getCanonicalName();
-	}
+	private final String viewNamePlural = "Entradas";
+	private final String urlName = "/entrada";
+	private final String model = Entrada.class.getCanonicalName();
 
 	protected void setFieldsForm(Object entrada) {
 		request.setAttribute("id", ((Entrada) entrada).getId().toString());
@@ -98,9 +86,9 @@ public class EntradaController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object entrada = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object entrada = session.get(Class.forName(model), Integer.parseInt(id));
 			setFieldsForm(entrada);
-			request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-form.jsp").forward(request, response);
+			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -111,7 +99,7 @@ public class EntradaController extends HttpServlet {
 	protected boolean remove(String id) throws IOException {
 		String bloqueio = verificaRemocao(id);
 		if (bloqueio != null) {
-			response.sendRedirect(getUrlName() + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
+			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
 		}
 
@@ -122,7 +110,7 @@ public class EntradaController extends HttpServlet {
 		int produtoId = dao.buscarPorId(session, Integer.parseInt(id)).getProduto().getId();
 
 		try {
-			Object entrada = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object entrada = session.get(Class.forName(model), Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(entrada);
 			session.getTransaction().commit();
@@ -132,7 +120,7 @@ public class EntradaController extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		response.sendRedirect(getUrlName());
+		response.sendRedirect(urlName);
 
 		produtoDao.recalcularSaldo(session, produtoId);
 		session.close();
@@ -180,14 +168,14 @@ public class EntradaController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
-		request.setAttribute(getViewNamePlural(), getList(getModel()));
-		request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
+		request.setAttribute(viewNamePlural, getList(model));
+		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
 	protected void update(Session session, String id) {
 		Object entrada;
 		try {
-			entrada = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			entrada = session.get(Class.forName(model), Integer.parseInt(id));
 			setFields(entrada);
 			session.beginTransaction();
 			session.update(entrada);
@@ -208,7 +196,7 @@ public class EntradaController extends HttpServlet {
 		request.setAttribute("operacao", "Adicionar");
 		request.setAttribute("produtos", ProdutoController.getList(Produto.class.getCanonicalName()));
 		request.setAttribute("data", dateToDateTimeLocal());
-		request.getRequestDispatcher("/WEB-INF/views"+ getUrlName() +"-form.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
 
 	@Override
@@ -221,7 +209,7 @@ public class EntradaController extends HttpServlet {
 		this.request = req;
 		this.response = resp;
 
-		req.setAttribute("viewName", getViewNamePlural());
+		req.setAttribute("viewName", viewNamePlural);
 
 		String add = req.getParameter("add");
 		String up = req.getParameter("up");
@@ -249,7 +237,7 @@ public class EntradaController extends HttpServlet {
 
 		session.close();
 
-		resp.sendRedirect(getUrlName());
+		resp.sendRedirect(urlName);
 	}
 
 }

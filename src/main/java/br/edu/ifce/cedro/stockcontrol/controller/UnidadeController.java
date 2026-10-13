@@ -32,36 +32,24 @@ public class UnidadeController extends HttpServlet {
 
 	private final UnidadeDAO dao = new UnidadeDAO();
 
-	protected String getViewName() {
-		return "Unidade";
+	private final String viewNamePlural = "Unidades";
+	private final String urlName = "/unidade";
+	private final String model = Unidade.class.getCanonicalName();
+
+	protected void setFieldsForm(Unidade unidade) {
+		request.setAttribute("id", unidade.getId().toString());
+		request.setAttribute("simbolo", unidade.getSimbolo());
+		request.setAttribute("descricao", unidade.getDescricao());
 	}
 	
-	protected String getViewNamePlural() {
-		return "Unidades";
-	}
-	
-	protected String getUrlName() {
-		return "/unidade";
-	}
-	
-	protected String getModel() {
-		return Unidade.class.getCanonicalName();
-	}
-	
-	protected void setFieldsForm(Object unidade) {
-		request.setAttribute("id", ((Unidade) unidade).getId().toString());
-		request.setAttribute("simbolo", ((Unidade) unidade).getSimbolo());
-		request.setAttribute("descricao", ((Unidade) unidade).getDescricao());
-	}
-	
-	protected void setFields(Object item) {
-		((Unidade) item).setSimbolo(request.getParameter("simbolo"));
-		((Unidade) item).setDescricao(request.getParameter("descricao"));
+	protected void setFields(Unidade item) {
+		item.setSimbolo(request.getParameter("simbolo"));
+		item.setDescricao(request.getParameter("descricao"));
 	}
 	
 	protected void add(Session session) {
 		Unidade unidade = new Unidade();
-		setFields((Object) unidade);
+		setFields(unidade);
 		dao.salvar(session, unidade);
 	}
 
@@ -82,10 +70,10 @@ public class UnidadeController extends HttpServlet {
 		Session session = sf.openSession();
 		
 		try {
-			Object unidade = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Unidade unidade = session.get(Unidade.class, Integer.parseInt(id));
 			setFieldsForm(unidade);
-			request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-form.jsp").forward(request, response);
-		} catch (NumberFormatException | ClassNotFoundException e) {
+			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
+		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
 		
@@ -95,7 +83,7 @@ public class UnidadeController extends HttpServlet {
 	protected boolean remove(String id) throws IOException {
 		String bloqueio = verificaRemocao(id);
 		if (bloqueio != null) {
-			response.sendRedirect(getUrlName() + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
+			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
 		}
 
@@ -103,7 +91,7 @@ public class UnidadeController extends HttpServlet {
 		Session session = sf.openSession();
 
 		try {
-			Object unidade = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			Object unidade = session.get(Class.forName(model), Integer.parseInt(id));
 			session.beginTransaction();
 			session.remove(unidade);
 			session.getTransaction().commit();
@@ -113,7 +101,7 @@ public class UnidadeController extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		response.sendRedirect(getUrlName());
+		response.sendRedirect(urlName);
 		session.close();
 		return true;
 	}
@@ -159,28 +147,26 @@ public class UnidadeController extends HttpServlet {
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 		
-		request.setAttribute(getViewNamePlural(), getList(getModel()));
-		request.getRequestDispatcher("/WEB-INF/views" + getUrlName() + "-table.jsp").forward(request, response);
+		request.setAttribute(viewNamePlural, getList(model));
+		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 	
 	protected void update(Session session, String id) {
-		Object unidade;
+		Unidade unidade;
 		try {
-			unidade = session.get(Class.forName(getModel()), Integer.parseInt(id));
+			unidade = session.get(Unidade.class, Integer.parseInt(id));
 			setFields(unidade);
 			session.beginTransaction();
 			session.update(unidade);
 			session.getTransaction().commit();
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
 	}
 	
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.getRequestDispatcher("/WEB-INF/views"+ getUrlName() +"-form.jsp").forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
 
 	@Override
@@ -193,7 +179,7 @@ public class UnidadeController extends HttpServlet {
 		this.request = req;
 		this.response = resp;
 		
-		req.setAttribute("viewName", getViewNamePlural());
+		req.setAttribute("viewName", viewNamePlural);
 		
 		String add = req.getParameter("add");
 		String up = req.getParameter("up");
@@ -221,7 +207,7 @@ public class UnidadeController extends HttpServlet {
 		
 		session.close();
 		
-		resp.sendRedirect(getUrlName());
+		resp.sendRedirect(urlName);
 	}
 
 }

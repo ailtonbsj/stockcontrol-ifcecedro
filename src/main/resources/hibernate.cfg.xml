@@ -22,10 +22,10 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!-- Names the annotated entity class  -->
-        <mapping class="br.edu.ifce.cedro.stockcontrol.models.Unidade" />
-        <mapping class="br.edu.ifce.cedro.stockcontrol.models.Produto" />
-        <mapping class="br.edu.ifce.cedro.stockcontrol.models.Entrada" />
-        <mapping class="br.edu.ifce.cedro.stockcontrol.models.Saida" />
+        <mapping class="br.edu.ifce.cedro.stockcontrol.model.Unidade" />
+        <mapping class="br.edu.ifce.cedro.stockcontrol.model.Produto" />
+        <mapping class="br.edu.ifce.cedro.stockcontrol.model.Entrada" />
+        <mapping class="br.edu.ifce.cedro.stockcontrol.model.Saida" />
         
 	</session-factory>
 </hibernate-configuration>
