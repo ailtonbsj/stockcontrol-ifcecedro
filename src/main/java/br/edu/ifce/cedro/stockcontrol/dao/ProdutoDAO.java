@@ -57,6 +57,13 @@ public class ProdutoDAO {
 		}
 	}
 
+	public Produto findById(Integer id) {
+		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+		Produto produto = session.get(Produto.class, id);
+		session.close();
+		return produto;
+	}
+
 	/** Todos os produtos, para montar a lista e o preenchimento dos formulários. */
 	public List<Produto> listar() {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();

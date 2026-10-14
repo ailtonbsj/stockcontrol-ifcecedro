@@ -54,6 +54,13 @@ public class EntradaDAO {
 		}
 	}
 
+	public Entrada findById(Integer id) {
+		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+		Entrada entrada = session.get(Entrada.class, id);
+		session.close();
+		return entrada;
+	}
+
 	/**
 	 * Busca a entrada pela chave dentro da sessão corrente. Por usar a sessão que já
 	 * está aberta, o Hibernate devolve a instância já carregada, sem nova consulta.

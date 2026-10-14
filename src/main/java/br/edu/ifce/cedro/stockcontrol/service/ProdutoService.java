@@ -3,12 +3,14 @@ package br.edu.ifce.cedro.stockcontrol.service;
 import javax.servlet.http.HttpServletRequest;
 
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
+import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import mapper.ProdutoMapper;
 
 public class ProdutoService {
 
     private final ProdutoDAO dao = new ProdutoDAO();
+	private final UnidadeDAO unidadeDao = new UnidadeDAO();
 
     public void add(HttpServletRequest request) {
 		Produto produto = new Produto();
@@ -37,6 +39,13 @@ public class ProdutoService {
 		}
 
 		return null;
+	}
+
+	public void findById(HttpServletRequest request, String id) {
+		Produto produto = dao.findById(Integer.parseInt(id));
+		request.setAttribute("operacao", "Atualizar");
+		request.setAttribute("unidades", unidadeDao.listar());
+		ProdutoMapper.toRequest(produto, request);
 	}
 
 }

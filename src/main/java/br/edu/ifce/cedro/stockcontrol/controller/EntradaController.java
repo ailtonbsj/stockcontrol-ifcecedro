@@ -18,7 +18,6 @@ import br.edu.ifce.cedro.stockcontrol.dao.EntradaDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Entrada;
 import br.edu.ifce.cedro.stockcontrol.service.EntradaService;
-import mapper.EntradaMapper;
 
 import static br.edu.ifce.cedro.stockcontrol.util.Util.dateToDateTimeLocal;
 
@@ -37,21 +36,12 @@ public class EntradaController extends HttpServlet {
 	private final String urlName = "/entrada";
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
-		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", produtoDao.listar());
-
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		try {
-			Entrada entrada = session.get(Entrada.class, Integer.parseInt(id));
-			EntradaMapper.toRequest(entrada, request);
+			service.findById(request, id);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		session.close();
 	}
 
 	protected boolean remove(String id) throws IOException {

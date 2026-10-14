@@ -18,7 +18,6 @@ import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.service.ProdutoService;
-import mapper.ProdutoMapper;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/produto")
@@ -35,21 +34,12 @@ public class ProdutoController extends HttpServlet {
 	private final String urlName = "/produto";
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
-		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("unidades", unidadeDao.listar());
-
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		try {
-			Produto produto = session.get(Produto.class, Integer.parseInt(id));
-			ProdutoMapper.toRequest(produto, request);
+			service.findById(request, id);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		session.close();
 	}
 
 	protected boolean remove(String id) throws IOException {

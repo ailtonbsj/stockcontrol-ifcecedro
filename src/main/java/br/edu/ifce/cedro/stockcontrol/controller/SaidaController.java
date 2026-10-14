@@ -18,7 +18,6 @@ import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.SaidaDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
 import br.edu.ifce.cedro.stockcontrol.service.SaidaService;
-import mapper.SaidaMapper;
 
 import static br.edu.ifce.cedro.stockcontrol.util.Util.dateToDateTimeLocal;
 
@@ -37,21 +36,12 @@ public class SaidaController extends HttpServlet {
 	private final String urlName = "/saida";
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
-		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", produtoDao.listar());
-
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
 		try {
-			Saida saida = session.get(Saida.class, Integer.parseInt(id));
-			SaidaMapper.toRequest(saida, request);
+			service.findById(request, id);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-
-		session.close();
 	}
 
 	protected boolean remove(String id) throws IOException {

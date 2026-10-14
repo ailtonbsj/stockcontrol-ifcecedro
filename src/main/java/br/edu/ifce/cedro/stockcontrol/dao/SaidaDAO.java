@@ -54,6 +54,13 @@ public class SaidaDAO {
 		}
 	}
 
+	public Saida findById(Integer id) {
+		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+		Saida saida = session.get(Saida.class, id);
+		session.close();
+		return saida;
+	}
+
 	/**
 	 * Busca a saída pela chave dentro da sessão corrente. Por usar a sessão que já
 	 * está aberta, o Hibernate devolve a instância já carregada, sem nova consulta.

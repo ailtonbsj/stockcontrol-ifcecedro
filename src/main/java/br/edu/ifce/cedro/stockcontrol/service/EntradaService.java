@@ -43,4 +43,11 @@ public class EntradaService {
 		return null;
 	}
 
+	public void findById(HttpServletRequest request, String id) {
+		Entrada entrada = dao.findById(Integer.parseInt(id));
+		request.setAttribute("operacao", "Atualizar");
+		request.setAttribute("produtos", produtoDao.listar());
+		EntradaMapper.toRequest(entrada, request);
+	}
+
 }
