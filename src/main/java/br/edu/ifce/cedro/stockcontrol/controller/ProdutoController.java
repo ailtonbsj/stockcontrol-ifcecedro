@@ -17,6 +17,7 @@ import org.hibernate.cfg.Configuration;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.service.ProdutoService;
 import mapper.ProdutoMapper;
 
 @SuppressWarnings("serial")
@@ -28,26 +29,10 @@ public class ProdutoController extends HttpServlet {
 
 	private final ProdutoDAO dao = new ProdutoDAO();
 	private final UnidadeDAO unidadeDao = new UnidadeDAO();
+	private final ProdutoService service = new ProdutoService();
 
 	private final String viewNamePlural = "Produtos";
 	private final String urlName = "/produto";
-
-	protected void add(){
-		Produto produto = new Produto();
-		ProdutoMapper.toModel(produto, request);
-		dao.salvar(produto);
-	}
-
-	protected String verificaRemocao(String id) {
-		long movimentacoes = dao.contarMovimentacoes(Integer.valueOf(id));
-
-		if (movimentacoes > 0) {
-			return "Este produto possui " + movimentacoes
-					+ " movimentação(ões) de estoque e não pode ser excluído.";
-		}
-
-		return null;
-	}
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
@@ -68,7 +53,7 @@ public class ProdutoController extends HttpServlet {
 	}
 
 	protected boolean remove(String id) throws IOException {
-		String bloqueio = verificaRemocao(id);
+		String bloqueio = service.verificaRemocao(id);
 		if (bloqueio != null) {
 			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
@@ -91,38 +76,11 @@ public class ProdutoController extends HttpServlet {
 		return true;
 	}
 
-	/** Quantos registros da entidade informada apontam para o registro id. */
-	protected static long contaDependencias(String modelName, String campo, String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		try {
-			return session.createQuery(
-					"select count(*) from " + modelName + " where " + campo + ".id = :id", Long.class)
-					.setParameter("id", Integer.valueOf(id)).uniqueResult();
-		} finally {
-			session.close();
-			sf.close();
-		}
-	}
-
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
 		request.setAttribute(viewNamePlural, dao.listar());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
-	}
-
-	protected void update(String id) {
-		try {
-			Produto produto = new Produto();
-			produto.setId(Integer.parseInt(id));
-			ProdutoMapper.toModel(produto, request);
-
-			dao.atualizar(produto);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {
@@ -157,15 +115,11 @@ public class ProdutoController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		this.request = req;
-		this.response = resp;
 
 		String id = req.getParameter("id");
 
-
-
-		if(id.equals("")) add();
-		else update(id);
+		if(id.equals("")) service.add(req);
+		else service.update(req, id);
 
 		resp.sendRedirect(urlName);
 	}

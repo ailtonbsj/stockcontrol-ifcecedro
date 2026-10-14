@@ -17,6 +17,7 @@ import org.hibernate.cfg.Configuration;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.SaidaDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
+import br.edu.ifce.cedro.stockcontrol.service.SaidaService;
 import mapper.SaidaMapper;
 
 import static br.edu.ifce.cedro.stockcontrol.util.Util.dateToDateTimeLocal;
@@ -30,24 +31,10 @@ public class SaidaController extends HttpServlet {
 
 	private final SaidaDAO dao = new SaidaDAO();
 	private final ProdutoDAO produtoDao = new ProdutoDAO();
+	private final SaidaService service = new SaidaService();
 
 	private final String viewNamePlural = "Saidas";
 	private final String urlName = "/saida";
-
-	protected void add() {
-		Saida saida = new Saida();
-		SaidaMapper.toModel(saida, request);
-		dao.salvar(saida);
-		produtoDao.recalcularSaldo(saida.getProduto().getId());
-	}
-
-	/**
-	 * Saída não tem restrição de exclusão: apagar uma só faz o saldo do produto
-	 * voltar a ser maior, nunca deixa referência órfã.
-	 */
-	protected String verificaRemocao(String id) {
-		return null;
-	}
 
 	protected void showFilledForm(String id) throws ServletException, IOException {
 		request.setAttribute("operacao", "Atualizar");
@@ -68,7 +55,7 @@ public class SaidaController extends HttpServlet {
 	}
 
 	protected boolean remove(String id) throws IOException {
-		String bloqueio = verificaRemocao(id);
+		String bloqueio = service.verificaRemocao(id);
 		if (bloqueio != null) {
 			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
@@ -96,42 +83,11 @@ public class SaidaController extends HttpServlet {
 		return true;
 	}
 
-	/** Quantos registros da entidade informada apontam para o registro id. */
-	protected static long contaDependencias(String modelName, String campo, String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		try {
-			return session.createQuery(
-					"select count(*) from " + modelName + " where " + campo + ".id = :id", Long.class)
-					.setParameter("id", Integer.valueOf(id)).uniqueResult();
-		} finally {
-			session.close();
-			sf.close();
-		}
-	}
-
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 
 		request.setAttribute(viewNamePlural, dao.listar());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
-	}
-
-	protected void update(String id) {
-		try {
-			Saida saida = new Saida();
-			saida.setId(Integer.parseInt(id));
-			SaidaMapper.toModel(saida, request);
-
-			dao.atualizar(saida);
-
-			// O saldo segue o produto que veio do formulário: é essa a referência que
-			// o mapper acabou de gravar na movimentação.
-			produtoDao.recalcularSaldo(saida.getProduto().getId());
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
 	}
 
 	protected void showEmptyForm() throws ServletException, IOException {
@@ -166,13 +122,11 @@ public class SaidaController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		this.request = req;
-		this.response = resp;
 
 		String id = req.getParameter("id");
 
-		if(id.equals("")) add();
-		else update(id);
+		if(id.equals("")) service.add(req);
+		else service.update(req, id);
 
 		resp.sendRedirect(urlName);
 	}

@@ -55,6 +55,13 @@ public class UnidadeDAO {
 		}
 	}
 
+	public Unidade findById(Integer id) {
+		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+		Unidade unidade = session.get(Unidade.class, id);
+		session.close();
+		return unidade;
+	}
+
 	/** Todas as unidades, para montar a lista e o preenchimento dos formulários. */
 	public List<Unidade> listar() {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();

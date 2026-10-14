@@ -16,7 +16,7 @@ import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
-import mapper.UnidadeMapper;
+import br.edu.ifce.cedro.stockcontrol.service.UnidadeService;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/unidade")
@@ -26,45 +26,22 @@ public class UnidadeController extends HttpServlet {
 	HttpServletResponse response;
 
 	private final UnidadeDAO dao = new UnidadeDAO();
+	private final UnidadeService service = new UnidadeService();
 
 	private final String viewNamePlural = "Unidades";
 	private final String urlName = "/unidade";
 	
-	protected void add() {
-		Unidade unidade = new Unidade();
-		UnidadeMapper.toModel(unidade, request);
-		dao.salvar(unidade);
-	}
-
-	protected String verificaRemocao(String id) {
-		long produtos = dao.contarProdutos(Integer.valueOf(id));
-
-		if (produtos > 0) {
-			return "Esta unidade está em uso por " + produtos + " produto(s) e não pode ser excluída.";
-		}
-
-		return null;
-	}
-	
 	protected void showFilledForm(String id) throws ServletException, IOException {
-		request.setAttribute("operacao", "Atualizar");
-		
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-		
 		try {
-			Unidade unidade = session.get(Unidade.class, Integer.parseInt(id));
-			UnidadeMapper.toRequest(unidade, request);
+			service.findById(request, id);
 			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-		
-		session.close();
 	}
 	
 	protected boolean remove(String id) throws IOException {
-		String bloqueio = verificaRemocao(id);
+		String bloqueio = service.verificaRemocao(id);
 		if (bloqueio != null) {
 			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
 			return false;
@@ -87,38 +64,11 @@ public class UnidadeController extends HttpServlet {
 		return true;
 	}
 	
-	/** Quantos registros da entidade informada apontam para o registro id. */
-	protected static long contaDependencias(String modelName, String campo, String id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		try {
-			return session.createQuery(
-					"select count(*) from " + modelName + " where " + campo + ".id = :id", Long.class)
-					.setParameter("id", Integer.valueOf(id)).uniqueResult();
-		} finally {
-			session.close();
-			sf.close();
-		}
-	}
-	
 	protected void listAll() throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
 		
 		request.setAttribute(viewNamePlural, dao.listar());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
-	}
-	
-	protected void update(String id) {
-		try {
-			Unidade unidade = new Unidade();
-			unidade.setId(Integer.parseInt(id));
-			UnidadeMapper.toModel(unidade, request);
-
-			dao.atualizar(unidade);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	protected void showEmptyForm() throws ServletException, IOException {
@@ -151,13 +101,11 @@ public class UnidadeController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		this.request = req;
-		this.response = resp;
 		
 		String id = req.getParameter("id");
 		
-		if(id.equals("")) add();
-		else update(id);
+		if(id.isBlank()) service.add(req);
+		else service.update(req, id);
 		
 		resp.sendRedirect(urlName);
 	}
