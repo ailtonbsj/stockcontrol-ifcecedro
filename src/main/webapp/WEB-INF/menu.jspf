@@ -51,7 +51,7 @@ with font-awesome or any other icon font library -->
 						class="far fa-circle nav-icon"></i>
 						<span>Listar</span>
 				</a></li>
-				<li class="nav-item"><a href="/entrada?add" class="nav-link">
+				<li class="nav-item"><a href="/entrada/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
 						<span>Adicionar</span>
 				</a></li>
@@ -69,7 +69,7 @@ with font-awesome or any other icon font library -->
 						class="far fa-circle nav-icon"></i>
 						<span>Listar</span>
 				</a></li>
-				<li class="nav-item"><a href="/saida?add" class="nav-link">
+				<li class="nav-item"><a href="/saida/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
 						<span>Adicionar</span>
 				</a></li>

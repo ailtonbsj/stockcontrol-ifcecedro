@@ -1,9 +1,13 @@
 package br.edu.ifce.cedro.stockcontrol.service;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.SaidaDAO;
+import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
 import mapper.SaidaMapper;
 
@@ -12,42 +16,55 @@ public class SaidaService {
     private final SaidaDAO dao = new SaidaDAO();
     private final ProdutoDAO produtoDao = new ProdutoDAO();
 
-    public void add(HttpServletRequest request) {
-		Saida saida = new Saida();
-		SaidaMapper.toModel(saida, request);
-		dao.salvar(saida);
-		produtoDao.recalcularSaldo(saida.getProduto().getId());
-	}
+    public List<Saida> findAll() {
+        return dao.findAll();
+    }
 
-	public void update(HttpServletRequest request, String id) {
-		try {
-			Saida saida = new Saida();
-			saida.setId(Integer.parseInt(id));
-			SaidaMapper.toModel(saida, request);
+    public List<Produto> findAllProdutos() {
+        return produtoDao.findAll();
+    }
 
-			dao.atualizar(saida);
+    public void findById(HttpServletRequest request, String id) {
+        Saida saida = dao.findById(Integer.parseInt(id));
+        request.setAttribute("produtos", findAllProdutos());
+        SaidaMapper.toRequest(saida, request);
+    }
 
-			// O saldo segue o produto que veio do formulário: é essa a referência que
-			// o mapper acabou de gravar na movimentação.
-			produtoDao.recalcularSaldo(saida.getProduto().getId());
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
-	}
+    public String validate(Integer id) {
+        return null;
+    }
 
-	/**
-	 * Saída não tem restrição de exclusão: apagar uma só faz o saldo do produto
-	 * voltar a ser maior, nunca deixa referência órfã.
-	 */
-	public String verificaRemocao(String id) {
-		return null;
-	}
+    public void deleteById(HttpServletResponse response, Integer id, String redirectUrl) {
+        try {
+            String invalidMessage = this.validate(id);
+            if (invalidMessage != null) {
+                response.sendRedirect(redirectUrl + "?erro=" + URLEncoder.encode(invalidMessage, "UTF-8"));
+                return;
+            }
+            // Lido antes da exclusão: é o produto cujo saldo será recalculado.
+            Integer produtoId = dao.findById(id).getProduto().getId();
+            dao.deleteById(id);
+            produtoDao.recalcularSaldo(produtoId);
+            response.sendRedirect(redirectUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void findById(HttpServletRequest request, String id) {
-		Saida saida = dao.findById(Integer.parseInt(id));
-		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", produtoDao.findAll());
-		SaidaMapper.toRequest(saida, request);
-	}
+    public void insert(HttpServletRequest request) {
+        Saida saida = new Saida();
+        SaidaMapper.toModel(saida, request);
+        dao.insert(saida);
+        produtoDao.recalcularSaldo(saida.getProduto().getId());
+    }
+
+    public void update(HttpServletRequest request, String id) {
+        Saida saida = new Saida();
+        saida.setId(Integer.valueOf(id));
+        SaidaMapper.toModel(saida, request);
+        dao.update(saida);
+        // O saldo segue o produto que veio do formulário.
+        produtoDao.recalcularSaldo(saida.getProduto().getId());
+    }
 
 }

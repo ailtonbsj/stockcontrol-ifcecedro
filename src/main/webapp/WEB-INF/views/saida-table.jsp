@@ -56,8 +56,8 @@
          							</td>
                                     <td>${saida.observacao}</td>
                                     <td>
-                                    	<a class="badge badge-success" href="/saida?up=${saida.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/saida?del=${saida.id}" onclick="return confirmDel()">Excluir</a>
+                                    	<a class="badge badge-success" href="/saida/editar?id=${saida.id}">Atualizar</a>
+                                    	<a class="badge badge-danger" href="/saida/remover?id=${saida.id}" onclick="return confirmDel()">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>
