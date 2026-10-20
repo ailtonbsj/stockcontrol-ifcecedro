@@ -8,7 +8,7 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
                     <li class="breadcrumb-item active">${viewName}</li>
                 </ol>
             </div>
@@ -48,8 +48,8 @@
                                     <td>${unidade.simbolo}</td>
                                     <td>${unidade.descricao}</td>
                                     <td>
-                                    	<a class="badge badge-success" href="/unidade?up=${unidade.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/unidade?del=${unidade.id}" onclick="return confirmDel()">Excluir</a>
+                                    	<a class="badge badge-success" href="/unidade/editar?id=${unidade.id}">Atualizar</a>
+                                    	<a class="badge badge-danger" href="/unidade/remover?id=${unidade.id}" onclick="return confirmDel()">Excluir</a>
                                     </td>
                                 </tr>
                                 </c:forEach>

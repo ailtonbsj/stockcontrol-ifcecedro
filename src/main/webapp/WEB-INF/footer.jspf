@@ -11,7 +11,7 @@
 <!-- ./wrapper -->
 
 <!-- AdminLTE App -->
-<script src="js/adminlte.min.js"></script>
+<script src="/js/adminlte.min.js"></script>
 <script>
 	function confirmDel() {
 		doIt = confirm('Tem certeza que vai remover???');

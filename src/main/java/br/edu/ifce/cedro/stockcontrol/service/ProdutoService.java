@@ -44,7 +44,7 @@ public class ProdutoService {
 	public void findById(HttpServletRequest request, String id) {
 		Produto produto = dao.findById(Integer.parseInt(id));
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("unidades", unidadeDao.listar());
+		request.setAttribute("unidades", unidadeDao.findAll());
 		ProdutoMapper.toRequest(produto, request);
 	}
 

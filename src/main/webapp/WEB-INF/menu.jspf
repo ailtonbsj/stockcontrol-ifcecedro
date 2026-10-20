@@ -16,7 +16,7 @@ with font-awesome or any other icon font library -->
 						<i class="far fa-circle nav-icon"></i>
 						<span>Listar</span>
 				</a></li>
-				<li class="nav-item"><a href="/unidade?add" class="nav-link">
+				<li class="nav-item"><a href="/unidade/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
 						<span>Adicionar</span>
 				</a></li>

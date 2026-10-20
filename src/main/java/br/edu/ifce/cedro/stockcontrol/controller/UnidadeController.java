@@ -1,113 +1,60 @@
 package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
-import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
-import br.edu.ifce.cedro.stockcontrol.model.Unidade;
 import br.edu.ifce.cedro.stockcontrol.service.UnidadeService;
 
-@SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/unidade")
+@WebServlet(urlPatterns = {"/unidade", "/unidade/novo", "/unidade/editar", "/unidade/remover"})
 public class UnidadeController extends HttpServlet {
 
-	HttpServletRequest request;
-	HttpServletResponse response;
-
-	private final UnidadeDAO dao = new UnidadeDAO();
 	private final UnidadeService service = new UnidadeService();
 
 	private final String viewNamePlural = "Unidades";
 	private final String urlName = "/unidade";
-	
-	protected void showFilledForm(String id) throws ServletException, IOException {
-		try {
-			service.findById(request, id);
-			request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	protected boolean remove(String id) throws IOException {
-		String bloqueio = service.verificaRemocao(id);
-		if (bloqueio != null) {
-			response.sendRedirect(urlName + "?erro=" + URLEncoder.encode(bloqueio, "UTF-8"));
-			return false;
-		}
 
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");		
+		request.setAttribute("viewName", viewNamePlural);
 
-		try {
-			Object unidade = session.get(Unidade.class, Integer.parseInt(id));
-			session.beginTransaction();
-			session.remove(unidade);
-			session.getTransaction().commit();
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
-		
-		response.sendRedirect(urlName);
-		session.close();
-		return true;
+    	String path = request.getServletPath();
+		String id = request.getParameter("id");
+
+		if(path.equals("/unidade")) listAll(request, response);
+		else if(path.contains("/novo")) showEmptyForm(request, response);
+		else if(path.contains("/editar")) showFilledForm(request, response, id);
+		else if(path.contains("/remover"))
+			service.deleteById(response, Integer.valueOf(id), urlName);
 	}
-	
-	protected void listAll() throws ServletException, IOException {
+
+	private void listAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("operacao", "Listar");
-		
-		request.setAttribute(viewNamePlural, dao.listar());
+		request.setAttribute(viewNamePlural, service.findAll());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
-	
-	protected void showEmptyForm() throws ServletException, IOException {
+
+	private void showEmptyForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-		
-		// As páginas são servidas em UTF-8: sem isso os acentos digitados nos
-		// formulários chegariam decodificados como ISO-8859-1.
-		req.setCharacterEncoding("UTF-8");
-		this.request = req;
-		this.response = resp;
-		
-		req.setAttribute("viewName", viewNamePlural);
-		
-		String add = req.getParameter("add");
-		String up = req.getParameter("up");
-		String del = req.getParameter("del");
-		
-		if(add != null) showEmptyForm();
-		else if(up != null) showFilledForm(up);
-		else if(del != null) remove(del);
-		else listAll();
+	
+	private void showFilledForm(HttpServletRequest request, HttpServletResponse response, String id) throws ServletException, IOException {
+		service.findById(request, id);
+		request.setAttribute("operacao", "Atualizar");
+		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
-		
-		String id = req.getParameter("id");
-		
-		if(id.isBlank()) service.add(req);
-		else service.update(req, id);
-		
-		resp.sendRedirect(urlName);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		String id = request.getParameter("id");
+		if(id.isBlank()) service.insert(request);
+		else service.update(request, id);
+		response.sendRedirect(urlName);
 	}
 
 }

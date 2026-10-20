@@ -75,15 +75,13 @@ public class ProdutoController extends HttpServlet {
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("unidades", unidadeDao.listar());
+		request.setAttribute("unidades", unidadeDao.findAll());
 		request.setAttribute("quantidade", "0");
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-
 		// As páginas são servidas em UTF-8: sem isso os acentos digitados nos
 		// formulários chegariam decodificados como ISO-8859-1.
 		req.setCharacterEncoding("UTF-8");

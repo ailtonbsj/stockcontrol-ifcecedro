@@ -2,7 +2,6 @@ package br.edu.ifce.cedro.stockcontrol.controller;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -89,8 +88,6 @@ public class EntradaController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-
 		// As páginas são servidas em UTF-8: sem isso os acentos digitados nos
 		// formulários chegariam decodificados como ISO-8859-1.
 		req.setCharacterEncoding("UTF-8");
