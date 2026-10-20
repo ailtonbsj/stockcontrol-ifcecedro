@@ -3,13 +3,13 @@
 	<ul class="nav nav-pills nav-sidebar flex-column"
 		data-widget="treeview" role="menu" data-accordion="false">
 		<!-- Add icons to the links using the .nav-icon class
-with font-awesome or any other icon font library -->
+	with font-awesome or any other icon font library -->
 		<li class="nav-header">MENU PRINCIPAL</li>
 		<li class="nav-item has-treeview<c:if test="${viewName == 'Unidades'}"> menu-open</c:if>">
 		<a href="#" class="nav-link<c:if test="${viewName == 'Unidades'}"> active</c:if>">
-			<i class="nav-icon fas fa-edit"></i>
-			<span> Unidades <i class="fas fa-angle-left right"></i>
-			</span>
+			<i class="fas fa-angle-right nav-arrow"></i>
+			<i class="nav-icon fas fa-ruler"></i>
+			<span> Unidades</span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/unidade" class="nav-link">
@@ -23,10 +23,9 @@ with font-awesome or any other icon font library -->
 			</ul></li>
 		<li class="nav-item has-treeview<c:if test="${viewName == 'Produtos'}"> menu-open</c:if>">
 		<a href="#" class="nav-link<c:if test="${viewName == 'Produtos'}"> active</c:if>">
-				<i class="nav-icon fas fa-table"></i>
-				<span>
-					Produtos <i class="fas fa-angle-left right"></i>
-				</span>
+				<i class="fas fa-angle-right nav-arrow"></i>
+				<i class="nav-icon fas fa-boxes"></i>
+				<span> Produtos</span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/produto" class="nav-link"> <i
@@ -41,10 +40,9 @@ with font-awesome or any other icon font library -->
 		</li>
 		<li class="nav-item has-treeview<c:if test="${viewName == 'Entradas'}"> menu-open</c:if>">
 		<a href="#" class="nav-link<c:if test="${viewName == 'Entradas'}"> active</c:if>">
-				<i class="nav-icon fas fa-table"></i>
-				<span>
-					Entradas <i class="fas fa-angle-left right"></i>
-				</span>
+				<i class="fas fa-angle-right nav-arrow"></i>
+				<i class="nav-icon fas fa-arrow-circle-down"></i>
+				<span> Entradas</span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/entrada" class="nav-link"> <i
@@ -59,10 +57,9 @@ with font-awesome or any other icon font library -->
 		</li>
 		<li class="nav-item has-treeview<c:if test="${viewName == 'Saidas'}"> menu-open</c:if>">
 		<a href="#" class="nav-link<c:if test="${viewName == 'Saidas'}"> active</c:if>">
-				<i class="nav-icon fas fa-table"></i>
-				<span>
-					Saidas <i class="fas fa-angle-left right"></i>
-				</span>
+				<i class="fas fa-angle-right nav-arrow"></i>
+				<i class="nav-icon fas fa-arrow-circle-up"></i>
+				<span> Saidas</span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/saida" class="nav-link"> <i

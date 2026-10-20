@@ -22,6 +22,20 @@
 <!-- Theme style -->
 <link rel="stylesheet" href="/css/adminlte.min.css">
 
+<style>
+/* Seta de expansão à esquerda do ícone do módulo, com espaçamento */
+.nav-sidebar .nav-arrow {
+	width: 1rem;
+	text-align: center;
+	margin-right: .5rem;
+}
+
+.nav-sidebar .menu-open>.nav-link .nav-arrow {
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
+</style>
+
 <!-- Google Font: Source Sans Pro -->
 <link
 	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700"
