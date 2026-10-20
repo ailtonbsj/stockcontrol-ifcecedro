@@ -1,51 +1,69 @@
 package br.edu.ifce.cedro.stockcontrol.service;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpServletResponse;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
+import br.edu.ifce.cedro.stockcontrol.model.Unidade;
 import mapper.ProdutoMapper;
 
 public class ProdutoService {
 
     private final ProdutoDAO dao = new ProdutoDAO();
-	private final UnidadeDAO unidadeDao = new UnidadeDAO();
+    private final UnidadeDAO unidadeDao = new UnidadeDAO();
 
-    public void add(HttpServletRequest request) {
-		Produto produto = new Produto();
-		ProdutoMapper.toModel(produto, request);
-		dao.salvar(produto);
-	}
+    public List<Produto> findAll() {
+        return dao.findAll();
+    }
 
-	public void update(HttpServletRequest request, String id) {
-		try {
-			Produto produto = new Produto();
-			produto.setId(Integer.parseInt(id));
-			ProdutoMapper.toModel(produto, request);
+    public List<Unidade> findAllUnidades() {
+        return unidadeDao.findAll();
+    }
 
-			dao.atualizar(produto);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
-	}
+    public void findById(HttpServletRequest request, String id) {
+        Produto produto = dao.findById(Integer.parseInt(id));
+        request.setAttribute("unidades", findAllUnidades());
+        ProdutoMapper.toRequest(produto, request);
+    }
 
-	public String verificaRemocao(String id) {
-		long movimentacoes = dao.contarMovimentacoes(Integer.valueOf(id));
+    public String validate(Integer id) {
+        long movimentacoes = dao.countMovimentacoes(Integer.valueOf(id));
+        if (movimentacoes > 0) {
+            return "Este produto possui " + movimentacoes
+                    + " movimentação(ões) de estoque e não pode ser excluído.";
+        }
+        return null;
+    }
 
-		if (movimentacoes > 0) {
-			return "Este produto possui " + movimentacoes
-					+ " movimentação(ões) de estoque e não pode ser excluído.";
-		}
+    public void deleteById(HttpServletResponse response, Integer id, String redirectUrl) {
+        try {
+            String invalidMessage = this.validate(id);
+            if (invalidMessage != null) {
+                response.sendRedirect(redirectUrl + "?erro=" + URLEncoder.encode(invalidMessage, "UTF-8"));
+                return;
+            }
+            dao.deleteById(id);
+            response.sendRedirect(redirectUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		return null;
-	}
+    public void insert(HttpServletRequest request) {
+        Produto produto = new Produto();
+        ProdutoMapper.toModel(produto, request);
+        dao.insert(produto);
+    }
 
-	public void findById(HttpServletRequest request, String id) {
-		Produto produto = dao.findById(Integer.parseInt(id));
-		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("unidades", unidadeDao.findAll());
-		ProdutoMapper.toRequest(produto, request);
-	}
+    public void update(HttpServletRequest request, String id) {
+        Produto produto = new Produto();
+        produto.setId(Integer.valueOf(id));
+        ProdutoMapper.toModel(produto, request);
+        dao.update(produto);
+    }
 
 }

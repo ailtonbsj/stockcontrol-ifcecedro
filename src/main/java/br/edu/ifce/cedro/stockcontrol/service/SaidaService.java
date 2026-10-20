@@ -46,7 +46,7 @@ public class SaidaService {
 	public void findById(HttpServletRequest request, String id) {
 		Saida saida = dao.findById(Integer.parseInt(id));
 		request.setAttribute("operacao", "Atualizar");
-		request.setAttribute("produtos", produtoDao.listar());
+		request.setAttribute("produtos", produtoDao.findAll());
 		SaidaMapper.toRequest(saida, request);
 	}
 

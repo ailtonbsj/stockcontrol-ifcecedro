@@ -81,7 +81,7 @@ public class EntradaController extends HttpServlet {
 
 	protected void showEmptyForm() throws ServletException, IOException {
 		request.setAttribute("operacao", "Adicionar");
-		request.setAttribute("produtos", produtoDao.listar());
+		request.setAttribute("produtos", produtoDao.findAll());
 		request.setAttribute("data", dateToDateTimeLocal());
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
 	}

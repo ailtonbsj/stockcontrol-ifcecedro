@@ -11,46 +11,13 @@ import br.edu.ifce.cedro.stockcontrol.model.Estoque;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
 
-/**
- * Acesso aos dados do produto. O {@code ProdutoController} cuida da requisição
- * e da apresentação; toda a conversa com o Hibernate fica aqui.
- *
- * As operações abrem e fecham a própria sessão, para que o controller cuide
- * só da requisição e da apresentação.
- */
 public class ProdutoDAO {
 
-	/**
-	 * Grava um novo produto, abrindo e fechando a própria sessão para que o
-	 * controller não precise conhecer o Hibernate.
-	 */
-	public void salvar(Produto produto) {
+	public List<Produto> findAll() {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
-
 		try {
-			session.beginTransaction();
-			session.save(produto);
-			session.getTransaction().commit();
-		} finally {
-			session.close();
-			sf.close();
-		}
-	}
-
-	/**
-	 * Grava as alterações de um produto já existente. A instância chega desanexada,
-	 * com a chave preenchida, e é mesclada na sessão que o próprio DAO abre: o
-	 * controller não precisa carregar o registro antes de gravar.
-	 */
-	public void atualizar(Produto produto) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		try {
-			session.beginTransaction();
-			session.merge(produto);
-			session.getTransaction().commit();
+			return session.createQuery("from " + Produto.class.getCanonicalName(), Produto.class).getResultList();
 		} finally {
 			session.close();
 			sf.close();
@@ -64,25 +31,7 @@ public class ProdutoDAO {
 		return produto;
 	}
 
-	/** Todos os produtos, para montar a lista e o preenchimento dos formulários. */
-	public List<Produto> listar() {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
-
-		try {
-			return session.createQuery("from " + Produto.class.getCanonicalName(), Produto.class).getResultList();
-		} finally {
-			session.close();
-			sf.close();
-		}
-	}
-
-	/**
-	 * Quantas movimentações de estoque existem para o produto informado. Entrada e
-	 * Saida são subclasses de {@link Estoque}, então contar na tabela base cobre as
-	 * duas.
-	 */
-	public long contarMovimentacoes(Integer id) {
+	public long countMovimentacoes(Integer id) {
 		SessionFactory sf = new Configuration().configure().buildSessionFactory();
 		Session session = sf.openSession();
 
@@ -96,14 +45,48 @@ public class ProdutoDAO {
 		}
 	}
 
-	/**
-	 * Recalcula o saldo do produto a partir das movimentações: tudo que entrou
-	 * menos tudo que saiu. É aqui que o saldo é recalculado porque entradas e
-	 * saídas são as duas faces do mesmo número.
-	 *
-	 * As somas são feitas no banco, agrupadas por produto, em vez de trazer todas
-	 * as movimentações para a memória.
-	 */
+	public void deleteById(Integer id) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.remove(session.get(Produto.class, id));
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
+	public void insert(Produto produto) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.save(produto);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
+	public void update(Produto produto) {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+
+		try {
+			session.beginTransaction();
+			session.merge(produto);
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
+
 	public void recalcularSaldo(Integer produtoId) {
 		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
 
