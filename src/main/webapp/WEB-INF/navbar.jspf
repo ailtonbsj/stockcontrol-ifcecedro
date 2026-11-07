@@ -19,20 +19,27 @@
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
                 <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">2</span>
+                <c:if test="${quantidadeNotificacoes > 0}">
+                    <span class="badge badge-danger navbar-badge">${quantidadeNotificacoes}</span>
+                </c:if>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">2 Notificações</span>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-envelope mr-2"></i> Produto quase vencendo!
-                    <span class="float-right text-muted text-sm"> 15 dias</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> Produto acabando!
-                    <span class="float-right text-muted text-sm">5 itens</span>
-                </a>
+                <span class="dropdown-item dropdown-header">${quantidadeNotificacoes} Notificações</span>
+                <c:choose>
+                    <c:when test="${not empty produtosAbaixoMinimo}">
+                        <c:forEach items="${produtosAbaixoMinimo}" var="produto">
+                            <div class="dropdown-divider"></div>
+                            <a href="/produto/editar?id=${produto.id}" class="dropdown-item">
+                                <i class="fas fa-boxes mr-2"></i> ${produto.nome}
+                                <span class="float-right text-muted text-sm"> ${produto.quantidade} ${produto.unidade.simbolo}</span>
+                            </a>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item text-muted">Nenhum produto abaixo do estoque mínimo</span>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </li>
     </ul>

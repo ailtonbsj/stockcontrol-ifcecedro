@@ -20,6 +20,10 @@ public class ProdutoService {
         return dao.findAll();
     }
 
+    public List<Produto> findAbaixoMinimo() {
+        return dao.findAbaixoMinimo();
+    }
+
     public List<Unidade> findAllUnidades() {
         return unidadeDao.findAll();
     }

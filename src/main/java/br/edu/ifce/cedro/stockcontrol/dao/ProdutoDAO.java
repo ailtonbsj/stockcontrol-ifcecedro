@@ -110,4 +110,18 @@ public class ProdutoDAO {
 
 		session.close();
 	}
+
+	public List<Produto> findAbaixoMinimo() {
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+		try {
+			return session.createQuery(
+					"select distinct p from " + Produto.class.getCanonicalName()
+							+ " p left join fetch p.unidade where p.minimo is not null and coalesce(p.quantidade, 0) < p.minimo order by p.nome",
+					Produto.class).getResultList();
+		} finally {
+			session.close();
+			sf.close();
+		}
+	}
 }
