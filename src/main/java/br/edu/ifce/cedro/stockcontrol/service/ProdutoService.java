@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
+import br.edu.ifce.cedro.stockcontrol.mapper.ProdutoMapper;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
-import mapper.ProdutoMapper;
 
 public class ProdutoService {
 

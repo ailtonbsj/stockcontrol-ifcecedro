@@ -1,4 +1,4 @@
-package mapper;
+package br.edu.ifce.cedro.stockcontrol.mapper;
 
 import javax.servlet.http.HttpServletRequest;
 

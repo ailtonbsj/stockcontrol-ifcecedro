@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import br.edu.ifce.cedro.stockcontrol.dao.EntradaDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
+import br.edu.ifce.cedro.stockcontrol.mapper.EntradaMapper;
 import br.edu.ifce.cedro.stockcontrol.model.Entrada;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
-import mapper.EntradaMapper;
 
 public class EntradaService {
 

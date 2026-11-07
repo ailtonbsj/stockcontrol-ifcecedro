@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import br.edu.ifce.cedro.stockcontrol.dao.ProdutoDAO;
 import br.edu.ifce.cedro.stockcontrol.dao.SaidaDAO;
+import br.edu.ifce.cedro.stockcontrol.mapper.SaidaMapper;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
-import mapper.SaidaMapper;
 
 public class SaidaService {
 
