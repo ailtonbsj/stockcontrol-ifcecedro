@@ -3,8 +3,7 @@ package br.edu.ifce.cedro.stockcontrol.dao;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import br.edu.ifce.cedro.stockcontrol.util.HibernateUtil;
 
 import br.edu.ifce.cedro.stockcontrol.model.Entrada;
 import br.edu.ifce.cedro.stockcontrol.model.Estoque;
@@ -14,26 +13,23 @@ import br.edu.ifce.cedro.stockcontrol.model.Saida;
 public class ProdutoDAO {
 
 	public List<Produto> findAll() {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			return session.createQuery("from " + Produto.class.getCanonicalName(), Produto.class).getResultList();
 		} finally {
 			session.close();
-			sf.close();
 		}
 	}
 
 	public Produto findById(Integer id) {
-		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		Produto produto = session.get(Produto.class, id);
 		session.close();
 		return produto;
 	}
 
 	public long countMovimentacoes(Integer id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		try {
 			return session.createQuery(
@@ -41,13 +37,11 @@ public class ProdutoDAO {
 					.setParameter("id", id).getSingleResultOrNull();
 		} finally {
 			session.close();
-			sf.close();
 		}
 	}
 
 	public void deleteById(Integer id) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		try {
 			session.beginTransaction();
@@ -55,13 +49,11 @@ public class ProdutoDAO {
 			session.getTransaction().commit();
 		} finally {
 			session.close();
-			sf.close();
 		}
 	}
 
 	public void insert(Produto produto) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		try {
 			session.beginTransaction();
@@ -69,13 +61,11 @@ public class ProdutoDAO {
 			session.getTransaction().commit();
 		} finally {
 			session.close();
-			sf.close();
 		}
 	}
 
 	public void update(Produto produto) {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		try {
 			session.beginTransaction();
@@ -83,12 +73,11 @@ public class ProdutoDAO {
 			session.getTransaction().commit();
 		} finally {
 			session.close();
-			sf.close();
 		}
 	}
 
 	public void recalcularSaldo(Integer produtoId) {
-		Session session = (new Configuration().configure().buildSessionFactory()).openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		Produto produto = session.get(Produto.class, produtoId);
 
@@ -112,8 +101,7 @@ public class ProdutoDAO {
 	}
 
 	public List<Produto> findAbaixoMinimo() {
-		SessionFactory sf = new Configuration().configure().buildSessionFactory();
-		Session session = sf.openSession();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			return session.createQuery(
 					"select distinct p from " + Produto.class.getCanonicalName()
@@ -121,7 +109,6 @@ public class ProdutoDAO {
 					Produto.class).getResultList();
 		} finally {
 			session.close();
-			sf.close();
 		}
 	}
 }

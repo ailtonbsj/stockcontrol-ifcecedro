@@ -9,14 +9,13 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 import br.edu.ifce.cedro.stockcontrol.model.Entrada;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
 import br.edu.ifce.cedro.stockcontrol.model.Usuario;
+import br.edu.ifce.cedro.stockcontrol.util.HibernateUtil;
 import br.edu.ifce.cedro.stockcontrol.util.SenhaUtil;
 
 /**
@@ -44,11 +43,8 @@ public class SeedDataListener implements ServletContextListener {
 			return;
 		}
 
-		SessionFactory sessionFactory = null;
 		try {
-			sessionFactory = new Configuration().configure().buildSessionFactory();
-			Session session = sessionFactory.openSession();
-
+			Session session = HibernateUtil.getSessionFactory().openSession();
 			try {
 				session.beginTransaction();
 				semear(session);
@@ -63,16 +59,12 @@ public class SeedDataListener implements ServletContextListener {
 			// Os dados fictícios são um conforto para demonstração: se o banco não
 			// estiver disponível ainda, a aplicação precisa subir do mesmo jeito.
 			LOG.log(Level.SEVERE, "Não foi possível popular o banco com dados fictícios.", e);
-		} finally {
-			if (sessionFactory != null) {
-				sessionFactory.close();
-			}
 		}
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
-		// Nada a liberar: a SessionFactory usada aqui já foi fechada.
+		// A SessionFactory compartilhada é gerenciada pelo HibernateUtil.
 	}
 
 	private void semear(Session session) {
