@@ -7,7 +7,7 @@ Foi utilizado o banco de banco MySQL disponível da suíte XAMPP utilizando o am
 ## Ferramentas de Desenvolvimento
 
 - Java 25
-- Eclipse 2019-09
+- Eclipse IDE
 - XAMPP (Apache e MySQL)
 - Visual Code
 - GIMP
@@ -15,13 +15,9 @@ Foi utilizado o banco de banco MySQL disponível da suíte XAMPP utilizando o am
 ## Bibliotecas utilizadas
 
 - Hibernate
-- Java EE Web API
+- Jakarta EE Web API
 - MySQL Connector
 - Lombok
-
-## Ambiente Linux
-
-O sistema também funciona para ambientes linux teste que configurados adequadamente.
 
 ## Docker
 
