@@ -15,13 +15,14 @@ public class EntradaController extends HttpServlet {
 
 	private final EntradaService service = new EntradaService();
 
-	private final String viewNamePlural = "Entradas";
+	private final String viewNameKey = "module.entries";
+	private final String viewDataKey = "Entradas";
 	private final String urlName = "/entrada";
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		request.setAttribute("viewName", viewNamePlural);
+		request.setAttribute("viewName", viewNameKey);
 
 		String path = request.getServletPath();
 		String id = request.getParameter("id");
@@ -30,17 +31,17 @@ public class EntradaController extends HttpServlet {
 		else if(path.contains("/novo")) showEmptyForm(request, response);
 		else if(path.contains("/editar")) showFilledForm(request, response, id);
 		else if(path.contains("/remover"))
-			service.deleteById(response, Integer.valueOf(id), urlName);
+			service.deleteById(request, response, Integer.valueOf(id), urlName);
 	}
 
 	private void listAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("operacao", "Listar");
-		request.setAttribute(viewNamePlural, service.findAll());
+		request.setAttribute("operacao", "op.list");
+		request.setAttribute(viewDataKey, service.findAll());
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-table.jsp").forward(request, response);
 	}
 
 	private void showEmptyForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("operacao", "Adicionar");
+		request.setAttribute("operacao", "op.add");
 		request.setAttribute("produtos", service.findAllProdutos());
 		request.setAttribute("data", dateToDateTimeLocal());
 		request.getRequestDispatcher("/WEB-INF/views"+ urlName +"-form.jsp").forward(request, response);
@@ -48,7 +49,7 @@ public class EntradaController extends HttpServlet {
 
 	private void showFilledForm(HttpServletRequest request, HttpServletResponse response, String id) throws ServletException, IOException {
 		service.findById(request, id);
-		request.setAttribute("operacao", "Atualizar");
+		request.setAttribute("operacao", "op.update");
 		request.getRequestDispatcher("/WEB-INF/views" + urlName + "-form.jsp").forward(request, response);
 	}
 

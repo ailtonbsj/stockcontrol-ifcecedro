@@ -4,12 +4,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>${viewName}</h1>
+                <h1><fmt:message key="${viewName}"/></h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                    <li class="breadcrumb-item active">${viewName}</li>
+                    <li class="breadcrumb-item"><a href="/"><fmt:message key="nav.home"/></a></li>
+                    <li class="breadcrumb-item active"><fmt:message key="${viewName}"/></li>
                 </ol>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 <!-- INICIO TABELA -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">${operacao}</h3>
+                        <h3 class="card-title"><fmt:message key="${operacao}"/></h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -36,8 +36,8 @@
                             <thead>
                                 <tr>
                                     <th style="width: 10px">#</th>
-                                    <th>Símbolo</th>
-                                    <th>Descrição</th>
+                                    <th><fmt:message key="field.symbol"/></th>
+                                    <th><fmt:message key="field.description"/></th>
                                     <th style="width: 132px"></th>
                                 </tr>
                             </thead>
@@ -48,8 +48,8 @@
                                     <td>${unidade.simbolo}</td>
                                     <td>${unidade.descricao}</td>
                                     <td>
-                                    	<a class="badge badge-success" href="/unidade/editar?id=${unidade.id}">Atualizar</a>
-                                    	<a class="badge badge-danger" href="/unidade/remover?id=${unidade.id}" onclick="return confirmDel()">Excluir</a>
+                                    	<a class="badge badge-success" href="/unidade/editar?id=${unidade.id}"><fmt:message key="op.update"/></a>
+                                    	<a class="badge badge-danger" href="/unidade/remover?id=${unidade.id}" onclick="return confirmDel()"><fmt:message key="op.delete"/></a>
                                     </td>
                                 </tr>
                                 </c:forEach>
@@ -58,13 +58,6 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer clearfix">
-                        <!-- <ul class="pagination pagination-sm m-0 float-right">
-                            <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                        </ul>  -->
                     </div>
                 </div>
                 <!-- /.card -->

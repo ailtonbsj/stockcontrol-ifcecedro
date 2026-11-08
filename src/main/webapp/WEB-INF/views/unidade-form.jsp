@@ -4,12 +4,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>${viewName}</h1>
+                <h1><fmt:message key="${viewName}"/></h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                    <li class="breadcrumb-item active">${viewName}</li>
+                    <li class="breadcrumb-item"><a href="/"><fmt:message key="nav.home"/></a></li>
+                    <li class="breadcrumb-item active"><fmt:message key="${viewName}"/></li>
                 </ol>
             </div>
         </div>
@@ -26,29 +26,29 @@
                 <!-- general form elements -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">${operacao}</h3>
+                        <h3 class="card-title"><fmt:message key="${operacao}"/></h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
                     <form role="form" action="/unidade" method="post">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="idNumber">Id</label>
-                                <input name="id" type="text" class="form-control" id="idNumber" placeholder="Id" value="${id}" readonly="readonly">
+                                <label for="idNumber"><fmt:message key="field.id"/></label>
+                                <input name="id" type="text" class="form-control" id="idNumber" placeholder="<fmt:message key='field.id'/>" value="${id}" readonly="readonly">
                             </div>
                             <div class="form-group">
-                                <label for="simbolo">Simbolo</label>
-                                <input name="simbolo" type="text" class="form-control" id="simbolo" placeholder="Simbolo" value="${simbolo}">
+                                <label for="simbolo"><fmt:message key="field.symbol"/></label>
+                                <input name="simbolo" type="text" class="form-control" id="simbolo" placeholder="<fmt:message key='field.symbol'/>" value="${simbolo}">
                             </div>
                             <div class="form-group">
-                                <label for="descricao">Descricao</label>
-                                <input name="descricao" type="text" class="form-control" id="descricao" placeholder="Descricao" value="${descricao}">
+                                <label for="descricao"><fmt:message key="field.description"/></label>
+                                <input name="descricao" type="text" class="form-control" id="descricao" placeholder="<fmt:message key='field.description'/>" value="${descricao}">
                             </div>
                         </div>
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="submit" class="btn btn-primary"><fmt:message key="op.save"/></button>
                         </div>
                     </form>
                 </div>

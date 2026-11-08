@@ -15,7 +15,7 @@
             </div>
             <div class="info">
                 <a href="#" class="d-block">${usuarioLogado.nome}</a>
-                <a href="/logout" class="d-block"><span class="badge bg-danger">Sair</span></a>
+                <a href="/logout" class="d-block"><span class="badge bg-danger"><fmt:message key="nav.logout"/></span></a>
             </div>
         </div>
 

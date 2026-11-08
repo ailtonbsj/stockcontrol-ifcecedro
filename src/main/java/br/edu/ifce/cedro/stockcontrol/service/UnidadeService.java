@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.mapper.UnidadeMapper;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
+import br.edu.ifce.cedro.stockcontrol.util.I18nUtil;
 
 public class UnidadeService {
 
@@ -30,10 +31,11 @@ public class UnidadeService {
 		return null;
 	}
 
-	public void deleteById(HttpServletResponse response, Integer id, String redirectUrl) {
+	public void deleteById(HttpServletRequest request, HttpServletResponse response, Integer id, String redirectUrl) {
 		try {
-			String invalidMessage = this.validate(id);
-			if (invalidMessage != null) {
+			long count = dao.countProduto(Integer.valueOf(id));
+			if (count > 0) {
+				String invalidMessage = I18nUtil.getMessage(request, "error.unit.in.use", count);
 				response.sendRedirect(redirectUrl + "?erro=" + URLEncoder.encode(invalidMessage, "UTF-8"));
 				return;
 			}

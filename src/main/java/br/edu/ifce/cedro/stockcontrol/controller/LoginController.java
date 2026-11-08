@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.jsp.jstl.core.Config;
 
 import br.edu.ifce.cedro.stockcontrol.dao.UsuarioDAO;
 import br.edu.ifce.cedro.stockcontrol.model.Usuario;
@@ -59,17 +60,32 @@ public class LoginController extends HttpServlet {
 
 		Usuario usuario = usuarioDAO.findByLogin(login);
 		if (usuario == null || !SenhaUtil.verificar(senha, usuario.getSenha())) {
-			request.setAttribute("erroLogin", "Usuário ou senha inválidos.");
+			request.setAttribute("erroLogin", "login.error.invalid");
 			request.setAttribute("loginInformado", login);
 			request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
 			return;
 		}
 
 		HttpSession antiga = request.getSession(false);
+		Object locale = null;
+		Object appLocale = null;
+		Object appLocaleBase = null;
 		if (antiga != null) {
+			locale = Config.get(antiga, Config.FMT_LOCALE);
+			appLocale = antiga.getAttribute("appLocale");
+			appLocaleBase = antiga.getAttribute("appLocaleBase");
 			antiga.invalidate();
 		}
 		HttpSession session = request.getSession(true);
+		if (locale != null) {
+			Config.set(session, Config.FMT_LOCALE, locale);
+		}
+		if (appLocale != null) {
+			session.setAttribute("appLocale", appLocale);
+		}
+		if (appLocaleBase != null) {
+			session.setAttribute("appLocaleBase", appLocaleBase);
+		}
 		usuario.setSenha(null);
 		session.setAttribute("usuarioLogado", usuario);
 		response.sendRedirect(request.getContextPath() + "/unidade");

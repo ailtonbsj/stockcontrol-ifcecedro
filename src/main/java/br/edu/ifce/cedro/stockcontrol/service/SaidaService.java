@@ -34,7 +34,7 @@ public class SaidaService {
         return null;
     }
 
-    public void deleteById(HttpServletResponse response, Integer id, String redirectUrl) {
+    public void deleteById(HttpServletRequest request, HttpServletResponse response, Integer id, String redirectUrl) {
         try {
             String invalidMessage = this.validate(id);
             if (invalidMessage != null) {

@@ -3,12 +3,13 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<fmt:setBundle basename="messages"/>
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="${not empty sessionScope.appLocaleBase ? sessionScope.appLocaleBase : 'pt'}">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Stock Control IFCE Cedro</title>
+<title><fmt:message key="app.title"/></title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 

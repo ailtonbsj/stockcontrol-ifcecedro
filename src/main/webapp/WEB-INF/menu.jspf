@@ -4,71 +4,71 @@
 		data-widget="treeview" role="menu" data-accordion="false">
 		<!-- Add icons to the links using the .nav-icon class
 	with font-awesome or any other icon font library -->
-		<li class="nav-header">MENU PRINCIPAL</li>
-		<li class="nav-item has-treeview<c:if test="${viewName == 'Unidades'}"> menu-open</c:if>">
-		<a href="#" class="nav-link<c:if test="${viewName == 'Unidades'}"> active</c:if>">
+		<li class="nav-header"><fmt:message key="nav.menu"/></li>
+		<li class="nav-item has-treeview<c:if test="${viewName == 'module.units'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'module.units'}"> active</c:if>">
 			<i class="fas fa-angle-right nav-arrow"></i>
 			<i class="nav-icon fas fa-ruler"></i>
-			<span> Unidades</span>
+			<span> <fmt:message key="module.units"/></span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/unidade" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<span>Listar</span>
+						<span><fmt:message key="op.list"/></span>
 				</a></li>
 				<li class="nav-item"><a href="/unidade/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<span>Adicionar</span>
+						<span><fmt:message key="op.add"/></span>
 				</a></li>
 			</ul></li>
-		<li class="nav-item has-treeview<c:if test="${viewName == 'Produtos'}"> menu-open</c:if>">
-		<a href="#" class="nav-link<c:if test="${viewName == 'Produtos'}"> active</c:if>">
+		<li class="nav-item has-treeview<c:if test="${viewName == 'module.products'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'module.products'}"> active</c:if>">
 				<i class="fas fa-angle-right nav-arrow"></i>
 				<i class="nav-icon fas fa-boxes"></i>
-				<span> Produtos</span>
+				<span> <fmt:message key="module.products"/></span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/produto" class="nav-link"> <i
 						class="far fa-circle nav-icon"></i>
-						<span>Listar</span>
+						<span><fmt:message key="op.list"/></span>
 				</a></li>
 				<li class="nav-item"><a href="/produto/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<span>Adicionar</span>
+						<span><fmt:message key="op.add"/></span>
 				</a></li>
 			</ul>
 		</li>
-		<li class="nav-item has-treeview<c:if test="${viewName == 'Entradas'}"> menu-open</c:if>">
-		<a href="#" class="nav-link<c:if test="${viewName == 'Entradas'}"> active</c:if>">
+		<li class="nav-item has-treeview<c:if test="${viewName == 'module.entries'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'module.entries'}"> active</c:if>">
 				<i class="fas fa-angle-right nav-arrow"></i>
 				<i class="nav-icon fas fa-arrow-circle-down"></i>
-				<span> Entradas</span>
+				<span> <fmt:message key="module.entries"/></span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/entrada" class="nav-link"> <i
 						class="far fa-circle nav-icon"></i>
-						<span>Listar</span>
+						<span><fmt:message key="op.list"/></span>
 				</a></li>
 				<li class="nav-item"><a href="/entrada/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<span>Adicionar</span>
+						<span><fmt:message key="op.add"/></span>
 				</a></li>
 			</ul>
 		</li>
-		<li class="nav-item has-treeview<c:if test="${viewName == 'Saidas'}"> menu-open</c:if>">
-		<a href="#" class="nav-link<c:if test="${viewName == 'Saidas'}"> active</c:if>">
+		<li class="nav-item has-treeview<c:if test="${viewName == 'module.exits'}"> menu-open</c:if>">
+		<a href="#" class="nav-link<c:if test="${viewName == 'module.exits'}"> active</c:if>">
 				<i class="fas fa-angle-right nav-arrow"></i>
 				<i class="nav-icon fas fa-arrow-circle-up"></i>
-				<span> Saidas</span>
+				<span> <fmt:message key="module.exits"/></span>
 		</a>
 			<ul class="nav nav-treeview">
 				<li class="nav-item"><a href="/saida" class="nav-link"> <i
 						class="far fa-circle nav-icon"></i>
-						<span>Listar</span>
+						<span><fmt:message key="op.list"/></span>
 				</a></li>
 				<li class="nav-item"><a href="/saida/novo" class="nav-link">
 						<i class="far fa-circle nav-icon"></i>
-						<span>Adicionar</span>
+						<span><fmt:message key="op.add"/></span>
 				</a></li>
 			</ul>
 		</li>

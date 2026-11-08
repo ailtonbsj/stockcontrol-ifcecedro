@@ -10,6 +10,7 @@ import br.edu.ifce.cedro.stockcontrol.dao.UnidadeDAO;
 import br.edu.ifce.cedro.stockcontrol.mapper.ProdutoMapper;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
+import br.edu.ifce.cedro.stockcontrol.util.I18nUtil;
 
 public class ProdutoService {
 
@@ -43,10 +44,11 @@ public class ProdutoService {
         return null;
     }
 
-    public void deleteById(HttpServletResponse response, Integer id, String redirectUrl) {
+    public void deleteById(HttpServletRequest request, HttpServletResponse response, Integer id, String redirectUrl) {
         try {
-            String invalidMessage = this.validate(id);
-            if (invalidMessage != null) {
+            long movimentacoes = dao.countMovimentacoes(Integer.valueOf(id));
+            if (movimentacoes > 0) {
+                String invalidMessage = I18nUtil.getMessage(request, "error.product.in.use", movimentacoes);
                 response.sendRedirect(redirectUrl + "?erro=" + URLEncoder.encode(invalidMessage, "UTF-8"));
                 return;
             }

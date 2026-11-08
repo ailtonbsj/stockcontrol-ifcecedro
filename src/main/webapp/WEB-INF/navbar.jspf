@@ -6,10 +6,10 @@
             <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/" class="nav-link">Inicio</a>
+            <a href="/" class="nav-link"><fmt:message key="nav.home"/></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="http://ailtonbsj.github.io" target="_blank" class="nav-link">Contato</a>
+            <a href="http://ailtonbsj.github.io" target="_blank" class="nav-link"><fmt:message key="nav.contact"/></a>
         </li>
     </ul>
 
@@ -24,7 +24,7 @@
                 </c:if>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">${quantidadeNotificacoes} Notificações</span>
+                <span class="dropdown-item dropdown-header">${quantidadeNotificacoes} <fmt:message key="nav.notifications"/></span>
                 <c:choose>
                     <c:when test="${not empty produtosAbaixoMinimo}">
                         <c:forEach items="${produtosAbaixoMinimo}" var="produto">
@@ -37,7 +37,7 @@
                     </c:when>
                     <c:otherwise>
                         <div class="dropdown-divider"></div>
-                        <span class="dropdown-item text-muted">Nenhum produto abaixo do estoque mínimo</span>
+                        <span class="dropdown-item text-muted"><fmt:message key="nav.notifications.empty"/></span>
                     </c:otherwise>
                 </c:choose>
             </div>
