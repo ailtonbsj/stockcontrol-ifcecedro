@@ -1,6 +1,6 @@
 package br.edu.ifce.cedro.stockcontrol.mapper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;

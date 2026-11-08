@@ -1,7 +1,7 @@
 package br.edu.ifce.cedro.stockcontrol.model;
 
 import java.util.Date;
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 import lombok.*;
 
 @Entity

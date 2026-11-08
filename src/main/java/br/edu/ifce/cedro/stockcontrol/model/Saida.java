@@ -1,6 +1,6 @@
 package br.edu.ifce.cedro.stockcontrol.model;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 import lombok.*;
 
 @Entity
