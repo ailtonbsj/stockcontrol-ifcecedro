@@ -1,6 +1,14 @@
 # StockControl IFCE Cedro
 
-Este é um sistema para controle de estoque desenvolvido usando Java com Hibernate e Web API. No processo de desenvolvimento utilizou-se a IDE Eclipse e gerenciador de pacotes Maven.
+![Java](https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+![Jakarta EE](https://img.shields.io/badge/Jakarta%20EE-11-2C2255?style=for-the-badge&logo=jakartaee&logoColor=white)
+![Hibernate](https://img.shields.io/badge/Hibernate-7-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Tomcat](https://img.shields.io/badge/Tomcat-11-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=black)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+Este é um sistema para controle de estoque desenvolvido com **Java 25**, **Jakarta EE 11** e **Hibernate 7** (API nativa, configuração programática), empacotado com Maven e executável via Docker.
 
 Foi utilizado o banco de banco MySQL disponível da suíte XAMPP utilizando o ambiente Windows 10.
 
