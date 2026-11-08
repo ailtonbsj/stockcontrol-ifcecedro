@@ -125,17 +125,17 @@ public class SeedDataListener implements ServletContextListener {
 	/** O povoamento só acontece em um banco realmente vazio, para não misturar
 	 *  dados fictícios com o que já foi cadastrado. */
 	private boolean estaVazio(Session session) {
-		return session.createQuery("select count(*) from Unidade", Long.class).uniqueResult() == 0
-				&& session.createQuery("select count(*) from Produto", Long.class).uniqueResult() == 0
-				&& session.createQuery("select count(*) from Entrada", Long.class).uniqueResult() == 0
-				&& session.createQuery("select count(*) from Saida", Long.class).uniqueResult() == 0;
+		return session.createQuery("select count(*) from Unidade", Long.class).getSingleResultOrNull() == 0
+				&& session.createQuery("select count(*) from Produto", Long.class).getSingleResultOrNull() == 0
+				&& session.createQuery("select count(*) from Entrada", Long.class).getSingleResultOrNull() == 0
+				&& session.createQuery("select count(*) from Saida", Long.class).getSingleResultOrNull() == 0;
 	}
 
 	private Unidade unidade(Session session, String simbolo, String descricao) {
 		Unidade unidade = new Unidade();
 		unidade.setSimbolo(simbolo);
 		unidade.setDescricao(descricao);
-		session.save(unidade);
+		session.persist(unidade);
 		return unidade;
 	}
 
@@ -146,7 +146,7 @@ public class SeedDataListener implements ServletContextListener {
 		produto.setUnidade(unidade);
 		// O saldo sai das movimentações registradas abaixo.
 		produto.setQuantidade(0);
-		session.save(produto);
+		session.persist(produto);
 		return produto;
 	}
 
@@ -159,7 +159,7 @@ public class SeedDataListener implements ServletContextListener {
 		entrada.setValidade(validade);
 		entrada.setData(data);
 		entrada.setObservacao(observacao);
-		session.save(entrada);
+		session.persist(entrada);
 
 		produto.setQuantidade(produto.getQuantidade() + quantidade);
 	}
@@ -172,7 +172,7 @@ public class SeedDataListener implements ServletContextListener {
 		saida.setQuantidade(quantidade);
 		saida.setData(data);
 		saida.setObservacao(observacao);
-		session.save(saida);
+		session.persist(saida);
 
 		produto.setQuantidade(produto.getQuantidade() - quantidade);
 	}
@@ -187,7 +187,7 @@ public class SeedDataListener implements ServletContextListener {
 
 	private void semearUsuarioPadrao(Session session) {
 		Long usuarios = session.createQuery("select count(*) from " + Usuario.class.getCanonicalName(), Long.class)
-				.uniqueResult();
+				.getSingleResultOrNull();
 		if (usuarios != null && usuarios > 0) {
 			return;
 		}
@@ -196,7 +196,7 @@ public class SeedDataListener implements ServletContextListener {
 		admin.setLogin("admin");
 		admin.setNome("Administrador");
 		admin.setSenha(SenhaUtil.criptografar("admin"));
-		session.save(admin);
+		session.persist(admin);
 		LOG.info("Usuário padrão criado: login 'admin' (altere a senha após o primeiro acesso).");
 	}
 

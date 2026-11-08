@@ -48,7 +48,7 @@ public class EntradaDAO {
 
 		try {
 			session.beginTransaction();
-			session.save(entrada);
+			session.persist(entrada);
 			session.getTransaction().commit();
 		} finally {
 			session.close();

@@ -38,7 +38,7 @@ public class ProdutoDAO {
 		try {
 			return session.createQuery(
 					"select count(*) from " + Estoque.class.getCanonicalName() + " where produto.id = :id", Long.class)
-					.setParameter("id", id).uniqueResult();
+					.setParameter("id", id).getSingleResultOrNull();
 		} finally {
 			session.close();
 			sf.close();
@@ -65,7 +65,7 @@ public class ProdutoDAO {
 
 		try {
 			session.beginTransaction();
-			session.save(produto);
+			session.persist(produto);
 			session.getTransaction().commit();
 		} finally {
 			session.close();
@@ -95,17 +95,17 @@ public class ProdutoDAO {
 		Long entradas = session
 				.createQuery("select sum(e.quantidade) from " + Entrada.class.getCanonicalName()
 						+ " e where e.produto.id = :id", Long.class)
-				.setParameter("id", produtoId).uniqueResult();
+				.setParameter("id", produtoId).getSingleResultOrNull();
 
 		Long saidas = session
 				.createQuery("select sum(s.quantidade) from " + Saida.class.getCanonicalName()
 						+ " s where s.produto.id = :id", Long.class)
-				.setParameter("id", produtoId).uniqueResult();
+				.setParameter("id", produtoId).getSingleResultOrNull();
 
 		produto.setQuantidade((int) ((entradas == null ? 0L : entradas) - (saidas == null ? 0L : saidas)));
 
 		session.beginTransaction();
-		session.save(produto);
+		session.persist(produto);
 		session.getTransaction().commit();
 
 		session.close();

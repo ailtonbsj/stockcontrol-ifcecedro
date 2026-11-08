@@ -13,7 +13,7 @@ ENV PATH=$CATALINA_HOME/bin:$PATH
 WORKDIR $CATALINA_HOME
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends curl ca-certificates \
-	&& curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.40/bin/apache-tomcat-10.1.40.tar.gz -o /tmp/tomcat.tar.gz \
+	&& curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.27/bin/apache-tomcat-11.0.27.tar.gz -o /tmp/tomcat.tar.gz \
 	&& tar -xzf /tmp/tomcat.tar.gz --strip-components=1 -C "$CATALINA_HOME" \
 	&& rm /tmp/tomcat.tar.gz \
 	&& rm -rf "$CATALINA_HOME/webapps/"* \

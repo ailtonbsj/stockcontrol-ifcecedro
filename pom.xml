@@ -11,8 +11,8 @@
 		<!-- Sem isso o javac depende do locale da maquina e os acentos
 			 dos fontes podem ser corrompidos na compilacao. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jakartaee.version>10.0.0</jakartaee.version>
-		<hibernate.version>6.6.1.Final</hibernate.version>
+		<jakartaee.version>11.0.0</jakartaee.version>
+		<hibernate.version>7.4.15.Final</hibernate.version>
 	</properties>
 
 	<dependencies>
@@ -38,12 +38,12 @@
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>4.0.2</version>
+			<version>4.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
-			<version>4.0.5</version>
+			<version>4.0.9</version>
 		</dependency>
 
 		<dependency>
@@ -55,16 +55,16 @@
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
-			<version>9.1.0</version>
+			<version>26.10.0</version>
 		</dependency>
 
-		<!-- https://projectlombok.org/ -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.48</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.mindrot</groupId>
 			<artifactId>jbcrypt</artifactId>
@@ -78,7 +78,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.14.1</version>
+					<version>3.16.0</version>
 					<configuration>
 						<verbose>true</verbose>
 						<release>25</release>
@@ -95,7 +95,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>3.4.0</version>
+					<version>3.5.1</version>
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
@@ -103,12 +103,12 @@
 				<plugin>
 					<groupId>org.codehaus.cargo</groupId>
 					<artifactId>cargo-maven3-plugin</artifactId>
-					<version>1.10.16</version>
+					<version>1.10.30</version>
 					<configuration>
 						<container>
-							<containerId>tomcat10x</containerId>
+							<containerId>tomcat11x</containerId>
 							<zipUrlInstaller>
-								<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/10.1.40/tomcat-10.1.40.zip</url>
+								<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/11.0.27/tomcat-11.0.27.zip</url>
 							</zipUrlInstaller>
 						</container>
 						<configuration>

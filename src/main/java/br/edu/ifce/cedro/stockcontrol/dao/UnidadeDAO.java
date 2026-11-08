@@ -36,7 +36,7 @@ public class UnidadeDAO {
 		try {
 			return session.createQuery(
 					"select count(*) from " + Produto.class.getCanonicalName() + " where unidade.id = :id", Long.class)
-					.setParameter("id", id).uniqueResult();
+					.setParameter("id", id).getSingleResultOrNull();
 		} finally {
 			session.close();
 			sf.close();
@@ -62,7 +62,7 @@ public class UnidadeDAO {
 		Session session = sf.openSession();
 		try {
 			session.beginTransaction();
-			session.save(unidade);
+			session.persist(unidade);
 			session.getTransaction().commit();
 		} finally {
 			session.close();

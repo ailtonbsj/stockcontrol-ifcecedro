@@ -48,7 +48,7 @@ public class SaidaDAO {
 
 		try {
 			session.beginTransaction();
-			session.save(saida);
+			session.persist(saida);
 			session.getTransaction().commit();
 		} finally {
 			session.close();

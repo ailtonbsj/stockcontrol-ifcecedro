@@ -14,7 +14,7 @@ public class UsuarioDAO {
 		try {
 			return session.createQuery(
 					"from " + Usuario.class.getCanonicalName() + " where login = :login", Usuario.class)
-					.setParameter("login", login).uniqueResult();
+					.setParameter("login", login).getSingleResultOrNull();
 		} finally {
 			session.close();
 			sf.close();
@@ -26,7 +26,7 @@ public class UsuarioDAO {
 		Session session = sf.openSession();
 		try {
 			return session.createQuery("select count(*) from " + Usuario.class.getCanonicalName(), Long.class)
-					.uniqueResult();
+					.getSingleResultOrNull();
 		} finally {
 			session.close();
 			sf.close();
@@ -38,7 +38,7 @@ public class UsuarioDAO {
 		Session session = sf.openSession();
 		try {
 			session.beginTransaction();
-			session.save(usuario);
+			session.persist(usuario);
 			session.getTransaction().commit();
 		} finally {
 			session.close();
