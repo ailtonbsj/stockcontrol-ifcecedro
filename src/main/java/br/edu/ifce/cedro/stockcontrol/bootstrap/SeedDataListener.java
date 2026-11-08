@@ -16,6 +16,8 @@ import br.edu.ifce.cedro.stockcontrol.model.Entrada;
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.model.Saida;
 import br.edu.ifce.cedro.stockcontrol.model.Unidade;
+import br.edu.ifce.cedro.stockcontrol.model.Usuario;
+import br.edu.ifce.cedro.stockcontrol.util.SenhaUtil;
 
 /**
  * Popula o banco com dados fictícios para que a aplicação já abra com conteúdo
@@ -74,8 +76,10 @@ public class SeedDataListener implements ServletContextListener {
 	}
 
 	private void semear(Session session) {
+		semearUsuarioPadrao(session);
+
 		if (!estaVazio(session)) {
-			LOG.info("O banco já contém dados; povoamento ignorado.");
+			LOG.info("O banco já contém dados; povoamento de estoque ignorado.");
 			return;
 		}
 
@@ -179,6 +183,21 @@ public class SeedDataListener implements ServletContextListener {
 
 	private static Date diasAFrente(int dias) {
 		return new Date(System.currentTimeMillis() + dias * DIA);
+	}
+
+	private void semearUsuarioPadrao(Session session) {
+		Long usuarios = session.createQuery("select count(*) from " + Usuario.class.getCanonicalName(), Long.class)
+				.uniqueResult();
+		if (usuarios != null && usuarios > 0) {
+			return;
+		}
+
+		Usuario admin = new Usuario();
+		admin.setLogin("admin");
+		admin.setNome("Administrador");
+		admin.setSenha(SenhaUtil.criptografar("admin"));
+		session.save(admin);
+		LOG.info("Usuário padrão criado: login 'admin' (altere a senha após o primeiro acesso).");
 	}
 
 	private boolean isHabilitado() {

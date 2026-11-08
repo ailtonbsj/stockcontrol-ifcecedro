@@ -14,7 +14,8 @@
                 <img src="/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Usuario 1 &nbsp;&nbsp;&nbsp;&nbsp;<span class="badge bg-danger">Sair</span></a>
+                <a href="#" class="d-block">${usuarioLogado.nome}</a>
+                <a href="/logout" class="d-block"><span class="badge bg-danger">Sair</span></a>
             </div>
         </div>
 

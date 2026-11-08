@@ -9,13 +9,12 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import br.edu.ifce.cedro.stockcontrol.model.Produto;
 import br.edu.ifce.cedro.stockcontrol.service.ProdutoService;
 
-@WebFilter("/*")
 public class NotificacaoFilter implements Filter {
 
 	private final ProdutoService produtoService = new ProdutoService();
@@ -29,7 +28,9 @@ public class NotificacaoFilter implements Filter {
 			throws IOException, ServletException {
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			if (!isStaticResource(httpRequest.getRequestURI(), httpRequest.getContextPath())) {
+			HttpSession session = httpRequest.getSession(false);
+			boolean autenticado = session != null && session.getAttribute("usuarioLogado") != null;
+			if (autenticado && !isStaticResource(httpRequest.getRequestURI(), httpRequest.getContextPath())) {
 				try {
 					List<Produto> produtosAbaixoMinimo = produtoService.findAbaixoMinimo();
 					request.setAttribute("produtosAbaixoMinimo", produtosAbaixoMinimo);
